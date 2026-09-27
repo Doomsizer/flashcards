@@ -1,0 +1,225 @@
+* {
+  box-sizing: border-box;
+  --main-text: #ececec;
+  --header-text: #0823f3;
+  --accent-text: #6b6b7b;
+  
+  --main-first-color: rgb(24, 6, 32);
+  --main-second-color: #1a0241;
+  --main-yellow: #f5b301;
+  --main-green: #2fb380;
+  --main-red: #e1573f;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--main-first-color);
+  color: var(--main-text);
+}
+
+.screen {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 1.4rem;
+  text-align: center;
+  margin: 8px 0 4px;
+}
+
+.subtitle {
+  color: #6b6b7b;
+  margin: 0 0 12px;
+  text-align: center;
+}
+
+.back-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #4a5bd4;
+  font-size: 0.95rem;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+/* --- Списки выбора (колоды / режимы) --- */
+.deck-list,
+.mode-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.deck-card,
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: var(--main-second-color);
+  cursor: pointer;
+  text-align: left;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.deck-card:hover,
+.mode-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.deck-subject {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--header-text);
+  font-weight: 600;
+}
+
+.deck-title,
+.mode-title {
+  font-size: 1.05rem;
+  color: var(--main-text);
+  font-weight: 600;
+}
+
+.deck-count,
+.mode-desc {
+  font-size: 0.85rem;
+  color: var(--accent-text);
+}
+
+/* --- Карточка --- */
+.progress {
+  color: var(--accent-text);
+  font-size: 0.9rem;
+  margin: 4px 0 12px;
+}
+
+.flashcard {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  background: var(--main-second-color);
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.flashcard-content {
+  flex: 1;
+  display: flex;
+  color: var(--main-text);
+  align-items: center;
+  justify-content: center;
+}
+
+.flashcard-front {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.flashcard-back {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--main-text);
+  white-space: pre-line;
+}
+
+.flashcard-hint {
+  font-size: 0.8rem;
+  color: var(--accent-text);
+  margin: 12px 0 0;
+  min-height: 1em;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: none;
+  font-size: 1.4rem;
+  color: var(--main-text);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.fav-btn-active {
+  color: var(--main-yellow);
+}
+
+/* --- Кнопки ответа --- */
+.answer-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--main-second-color);
+  color: var(--main-text);
+}
+
+.btn-correct {
+  background: var(--main-green);
+}
+
+.btn-wrong {
+  background: var(--main-red);
+}
+
+.summary {
+  width: 100%;
+  text-align: center;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- Адаптив под ПК: чуть шире и крупнее --- */
+@media (min-width: 700px) {
+  .screen {
+    max-width: 640px;
+    padding-top: 40px;
+  }
+
+  .flashcard {
+    min-height: 260px;
+  }
+
+  .flashcard-front {
+    font-size: 1.8rem;
+  }
+}
