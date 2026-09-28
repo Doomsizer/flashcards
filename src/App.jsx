@@ -7,6 +7,7 @@ import ModeSelector from './components/ModeSelector';
 import ShuffleMode from './components/ShuffleMode';
 import LearnMode from './components/LearnMode';
 import TableMode from './components/TableMode';
+import GithubLink from './components/GithubLink';
 import './App.css';
 
 function allCardsOf(d) {
@@ -38,45 +39,69 @@ export default function App() {
     setMode(m);
   }
 
-  if (!deck) {
-    return <DeckSelector decks={decks} onSelect={(d) => setDeck(d)} />;
+  function goHome() {
+    setMode(null);
+    setDeck(null);
   }
 
-  if (!mode) {
-    return (
-      <ModeSelector
-        deck={deck}
-        favoritesCount={favIds.length}
-        onSelect={selectMode}
-        onBack={() => setDeck(null)}
-      />
-    );
+  return (
+    <>
+      <header className="app-header">
+        <button className="app-logo" onClick={goHome} aria-label="На главную">
+          <span>
+            by <span className="app-logo-name">Doomsizer</span> with love
+          </span>
+          <span className="app-logo-heart" aria-hidden="true">❤</span>
+        </button>
+      </header>
+      {renderScreen()}
+      <footer className="app-footer">
+        <GithubLink />
+      </footer>
+    </>
+  );
+
+  function renderScreen() {
+    if (!deck) {
+      return <DeckSelector decks={decks} onSelect={(d) => setDeck(d)} />;
+    }
+
+    if (!mode) {
+      return (
+        <ModeSelector
+          deck={deck}
+          favoritesCount={favIds.length}
+          onSelect={selectMode}
+          onBack={() => setDeck(null)}
+        />
+      );
+    }
+
+    const back = () => setMode(null);
+
+    if (mode === 'free' || mode === 'favorites') {
+      return (
+        <ShuffleMode
+          title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
+          cards={sessionCards}
+          kind={deck.type}
+          isFavorite={isFavorite}
+          onToggleFavorite={toggleFavorite}
+          onBack={back}
+        />
+      );
+    }
+
+    if (mode === 'table') {
+      return <TableMode deck={deck} onBack={back} />;
+    }
+
+    if (mode === 'learn') {
+      return (
+        <LearnMode deck={deck} isFavorite={isFavorite} onToggleFavorite={toggleFavorite} onBack={back} />
+      );
+    }
+
+    return null;
   }
-
-  const back = () => setMode(null);
-
-  if (mode === 'free' || mode === 'favorites') {
-    return (
-      <ShuffleMode
-        title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
-        cards={sessionCards}
-        kind={deck.type}
-        isFavorite={isFavorite}
-        onToggleFavorite={toggleFavorite}
-        onBack={back}
-      />
-    );
-  }
-
-  if (mode === 'table') {
-    return <TableMode deck={deck} onBack={back} />;
-  }
-
-  if (mode === 'learn') {
-    return (
-      <LearnMode deck={deck} isFavorite={isFavorite} onToggleFavorite={toggleFavorite} onBack={back} />
-    );
-  }
-
-  return null;
 }

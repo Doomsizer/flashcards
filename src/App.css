@@ -1,7 +1,6 @@
 :root {
   /* Фон */
   --bg: #1b1238;
-  --bg-raised: #221842;
   --bg-glow-violet: rgba(150, 90, 255, 0.28);
   --bg-glow-blue: rgba(122, 177, 235, 0.16);
 
@@ -26,6 +25,8 @@
   --red: #ec5f49;
   --red-light: #ff9a8a;
 
+  --header-h: 48px;
+  --footer-h: 52px;
   --radius-lg: 22px;
   --radius-md: 14px;
   --shadow-card: 0 18px 40px -12px rgba(8, 4, 30, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -59,11 +60,83 @@ button {
   outline-offset: 3px;
 }
 
+/* На сенсорных экранах обводка фокуса не нужна: после тапа она оставалась на кнопке */
+@media (hover: none) {
+  :focus-visible {
+    outline: none;
+  }
+}
+
+/* --- Шапка с логотипом --- */
+.app-header {
+  max-width: 480px;
+  height: var(--header-h);
+  margin: 0 0 auto 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* --- Подвал: ссылка на GitHub в правом нижнем углу --- */
+.app-footer {
+  height: var(--footer-h);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.github-link {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: -8px;
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: -8px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.app-logo-name {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.app-logo-heart {
+  color: #ff5d8f;
+  display: inline-block;
+  animation: heart-beat 2.4s ease-in-out infinite;
+}
+
+@keyframes heart-beat {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(1.25); }
+  80% { transform: scale(1); }
+  90% { transform: scale(1.15); }
+}
+
 .screen {
   max-width: 480px;
   margin: 0 auto;
-  min-height: 100vh;
-  padding: 20px 16px 40px;
+  min-height: calc(100vh - var(--header-h) - var(--footer-h));
+  padding: 8px 16px 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -107,21 +180,9 @@ h2 {
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
-.back-btn:hover {
-  background: var(--accent-soft);
-}
-
 .arrow-icon {
   flex-shrink: 0;
   transition: translate 0.2s var(--ease-out);
-}
-
-.back-btn:hover .arrow-icon {
-  translate: -3px 0;
-}
-
-.btn:hover .arrow-icon {
-  translate: 3px 0;
 }
 
 /* --- Списки выбора (колоды / режимы) --- */
@@ -150,14 +211,6 @@ h2 {
   text-align: left;
   backdrop-filter: blur(6px);
   transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
-}
-
-.deck-card:hover,
-.mode-card:hover {
-  background: var(--surface-hover);
-  border-color: rgba(122, 233, 235, 0.45);
-  box-shadow: 0 10px 28px -10px rgba(122, 233, 235, 0.35);
-  transform: translateY(-2px);
 }
 
 .deck-card:active,
@@ -263,10 +316,6 @@ h2 {
   transform: rotateY(180deg);
 }
 
-.flashcard:hover .flashcard-face-front {
-  border-color: rgba(122, 233, 235, 0.35);
-}
-
 .flashcard-static {
   cursor: default;
 }
@@ -326,12 +375,6 @@ h2 {
   margin: 0 1px;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.15s var(--ease-out), box-shadow 0.15s ease;
-}
-
-.stress-vowel:hover:not(:disabled) {
-  background: rgba(122, 233, 235, 0.28);
-  box-shadow: 0 6px 16px -6px rgba(122, 233, 235, 0.6);
-  transform: translateY(-2px);
 }
 
 .stress-vowel:active:not(:disabled) {
@@ -405,13 +448,7 @@ h2 {
   transition: background-color 0.15s ease, color 0.2s ease;
 }
 
-.fav-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text);
-}
-
-.fav-btn-active,
-.fav-btn-active:hover {
+.fav-btn-active {
   color: var(--yellow);
 }
 
@@ -517,10 +554,6 @@ h2 {
   transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.btn:hover {
-  filter: brightness(1.1);
-}
-
 .btn:active {
   transform: scale(0.97);
 }
@@ -579,26 +612,29 @@ h2 {
 }
 
 /* --- Режим «Таблица» --- */
+/* Таблица всегда помещается в ширину экрана без прокрутки:
+   столбцы равной ширины, а шрифт и отступы масштабируются от ширины окна */
 .table-wrap {
   width: 100%;
-  overflow-x: auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow-card);
-  padding: 8px;
+  padding: clamp(3px, 1.2vw, 8px);
 }
 
 .learn-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: separate;
-  border-spacing: 4px;
+  border-spacing: clamp(2px, 0.8vw, 4px);
+  font-size: clamp(0.6rem, 2.6vw, 0.95rem);
   font-variant-numeric: tabular-nums;
 }
 
 .table-head {
-  padding: 6px 4px;
-  font-size: 0.85rem;
+  padding: 0.4em 0;
+  font-size: 0.9em;
   font-weight: 700;
   color: var(--accent);
   text-align: center;
@@ -612,32 +648,23 @@ h2 {
 
 .table-head-sub {
   margin-top: 2px;
-  font-size: 0.75rem;
+  font-size: 0.85em;
   font-weight: 600;
   color: var(--text-muted);
 }
 
-/* Названия функций прилипают к левому краю при горизонтальной прокрутке на телефоне */
 .table-head-row {
-  position: sticky;
-  left: 0;
-  z-index: 1;
   color: var(--accent-2);
-  text-align: left;
-  padding-right: 8px;
-  background: var(--bg-raised);
-  border-radius: 8px;
 }
 
 .table-cell {
-  height: 40px;
-  min-width: 48px;
-  padding: 0 4px;
-  border-radius: 10px;
+  height: 2.8em;
+  padding: 0;
+  border-radius: clamp(6px, 1.8vw, 10px);
   background: rgba(255, 255, 255, 0.04);
   text-align: center;
-  font-size: 0.95rem;
   font-weight: 600;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
@@ -651,20 +678,18 @@ h2 {
 }
 
 .table-blank {
+  display: block;
   width: 100%;
-  height: 40px;
+  height: 2.8em;
+  padding: 0;
   border: 1.5px dashed rgba(122, 233, 235, 0.45);
-  border-radius: 10px;
+  border-radius: clamp(6px, 1.8vw, 10px);
   background: transparent;
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.table-blank:hover {
-  background: var(--accent-soft);
 }
 
 .table-blank.is-active {
@@ -749,21 +774,85 @@ h2 {
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s var(--ease-out);
 }
 
-.option-btn:hover {
-  border-color: rgba(122, 233, 235, 0.5);
-  background: var(--accent-soft);
-  transform: translateY(-2px);
-}
-
 .option-btn:active {
   transform: scale(0.95);
 }
 
+/* --- Эффекты наведения: только для мыши.
+   На телефоне :hover «залипает» на последней нажатой кнопке и она продолжает светиться --- */
+@media (hover: hover) and (pointer: fine) {
+  .back-btn:hover {
+    background: var(--accent-soft);
+  }
+
+  .back-btn:hover .arrow-icon {
+    translate: -3px 0;
+  }
+
+  .btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .btn:hover .arrow-icon {
+    translate: 3px 0;
+  }
+
+  .deck-card:hover,
+  .mode-card:hover {
+    background: var(--surface-hover);
+    border-color: rgba(122, 233, 235, 0.45);
+    box-shadow: 0 10px 28px -10px rgba(122, 233, 235, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .flashcard:hover .flashcard-face-front {
+    border-color: rgba(122, 233, 235, 0.35);
+  }
+
+  .stress-vowel:hover:not(:disabled) {
+    background: rgba(122, 233, 235, 0.28);
+    box-shadow: 0 6px 16px -6px rgba(122, 233, 235, 0.6);
+    transform: translateY(-2px);
+  }
+
+  .fav-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+  }
+
+  .fav-btn-active:hover {
+    color: var(--yellow);
+  }
+
+  .table-blank:hover {
+    background: var(--accent-soft);
+  }
+
+  .option-btn:hover {
+    border-color: rgba(122, 233, 235, 0.5);
+    background: var(--accent-soft);
+    transform: translateY(-2px);
+  }
+
+  .app-logo:hover {
+    color: var(--text);
+  }
+
+  .github-link:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+}
+
 /* --- Адаптив под ПК: чуть шире и крупнее --- */
 @media (min-width: 700px) {
-  .screen {
+  .screen,
+  .app-header {
     max-width: 640px;
-    padding-top: 40px;
+  }
+
+  .screen {
+    padding-top: 24px;
   }
 
   .flashcard-inner {
