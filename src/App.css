@@ -31,6 +31,21 @@
   --radius-md: 14px;
   --shadow-card: 0 18px 40px -12px rgba(8, 4, 30, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Масштаб всего интерфейса (см. #root). На компьютере — 1.5, на телефоне — 1 */
+  --ui-zoom: 1;
+}
+
+/* На больших экранах с мышью интерфейс при 100% масштабе браузера выглядел мелким,
+   поэтому увеличиваем его целиком, как если бы в браузере стояло 150% */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  :root {
+    --ui-zoom: 1.5;
+  }
+}
+
+#root {
+  zoom: var(--ui-zoom);
 }
 
 * {
@@ -135,7 +150,8 @@ button {
 .screen {
   max-width: 480px;
   margin: 0 auto;
-  min-height: calc(100vh - var(--header-h) - var(--footer-h));
+  /* 100vh внутри увеличенного #root тоже умножается на zoom — делим обратно */
+  min-height: calc(100vh / var(--ui-zoom) - var(--header-h) - var(--footer-h));
   padding: 8px 16px 40px;
   display: flex;
   flex-direction: column;
