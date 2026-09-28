@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
 import decks from './data/decks';
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { favoritesKey } from './utils/favorites';
 import DeckSelector from './components/DeckSelector';
 import ModeSelector from './components/ModeSelector';
 import ShuffleMode from './components/ShuffleMode';
 import LearnMode from './components/LearnMode';
+import TableMode from './components/TableMode';
 import './App.css';
+
+function allCardsOf(d) {
+  return d.sections.flatMap((s) => s.cards);
+}
 
 export default function App() {
   const [deck, setDeck] = useState(null);
   const [mode, setMode] = useState(null);
+  // Набор карточек для ShuffleMode фиксируется при входе в режим,
+  // чтобы клик по ☆ не перемешивал колоду заново посреди прохода
+  const [sessionCards, setSessionCards] = useState([]);
 
   // Избранное хранится отдельно для каждой колоды: favorites:<deckId> -> [id, id, ...]
-  const [favIds, setFavIds] = useLocalStorage(deck ? `favorites:${deck.id}` : 'favorites:none', []);
+  const [favIds, setFavIds] = useLocalStorage(deck ? favoritesKey(deck.id) : null, []);
 
   function isFavorite(cardId) {
     return favIds.includes(cardId);
@@ -22,8 +31,11 @@ export default function App() {
     setFavIds((ids) => (ids.includes(cardId) ? ids.filter((id) => id !== cardId) : [...ids, cardId]));
   }
 
-  function allCardsOf(d) {
-    return d.sections.flatMap((s) => s.cards);
+  function selectMode(m) {
+    const all = allCardsOf(deck);
+    if (m === 'free') setSessionCards(all);
+    if (m === 'favorites') setSessionCards(all.filter((c) => favIds.includes(c.id)));
+    setMode(m);
   }
 
   if (!deck) {
@@ -35,7 +47,7 @@ export default function App() {
       <ModeSelector
         deck={deck}
         favoritesCount={favIds.length}
-        onSelect={(m) => setMode(m)}
+        onSelect={selectMode}
         onBack={() => setDeck(null)}
       />
     );
@@ -43,11 +55,12 @@ export default function App() {
 
   const back = () => setMode(null);
 
-  if (mode === 'free') {
+  if (mode === 'free' || mode === 'favorites') {
     return (
       <ShuffleMode
-        title="Свободная прогонка"
-        cards={allCardsOf(deck)}
+        title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
+        cards={sessionCards}
+        kind={deck.type}
         isFavorite={isFavorite}
         onToggleFavorite={toggleFavorite}
         onBack={back}
@@ -55,17 +68,8 @@ export default function App() {
     );
   }
 
-  if (mode === 'favorites') {
-    const favCards = allCardsOf(deck).filter((c) => favIds.includes(c.id));
-    return (
-      <ShuffleMode
-        title="Избранное"
-        cards={favCards}
-        isFavorite={isFavorite}
-        onToggleFavorite={toggleFavorite}
-        onBack={back}
-      />
-    );
+  if (mode === 'table') {
+    return <TableMode deck={deck} onBack={back} />;
   }
 
   if (mode === 'learn') {

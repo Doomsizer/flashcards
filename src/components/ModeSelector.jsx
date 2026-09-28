@@ -1,14 +1,21 @@
 import React from 'react';
+import BackButton from './BackButton';
 
 export default function ModeSelector({ deck, favoritesCount, onSelect, onBack }) {
   return (
     <div className="screen">
-      <button className="back-btn" onClick={onBack}>← Сменить словарь</button>
+      <BackButton onClick={onBack}>Сменить словарь</BackButton>
       <h1>{deck.title}</h1>
       <p className="subtitle">Выбери режим</p>
       <div className="mode-list">
+        {deck.table && (
+          <button className="mode-card mode-card-special" onClick={() => onSelect('table')}>
+            <span className="mode-title">Таблица</span>
+            <span className="mode-desc">Заполняй пропуски: сначала один, в конце вся таблица</span>
+          </button>
+        )}
         <button className="mode-card" onClick={() => onSelect('free')}>
-          <span className="mode-title">Свободная прогонка</span>
+          <span className="mode-title">Свободный режим</span>
           <span className="mode-desc">Все карточки в разброс, без повторов</span>
         </button>
         <button className="mode-card" onClick={() => onSelect('favorites')}>

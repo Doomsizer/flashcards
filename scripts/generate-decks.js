@@ -17,6 +17,54 @@ function slugify(text) {
     return text.toLowerCase().replace(/[^a-zа-я0-9]+/gi, '-').replace(/^-|-$/g, '');
 }
 
+// Буква е с точками задана кодом символа, чтобы не писать ее в коде
+const YO = String.fromCharCode(0x451);
+// Гласные для колод с ударениями
+const VOWELS = 'аеиоуыэюя' + YO;
+
+function isVowel(ch) {
+    return VOWELS.includes(ch.toLowerCase());
+}
+
+// Разбор слова для колоды ударений: ударная гласная записана заглавной (звонИт).
+// Если заглавных гласных нет, ударной считается буква е с точками (она всегда ударная).
+// Возвращает { word, stressIndex } или null, если ударение указано некорректно.
+function parseStressWord(raw) {
+    const chars = [...raw];
+    const upper = chars
+        .map((ch, i) => (isVowel(ch) && ch !== ch.toLowerCase() ? i : -1))
+        .filter((i) => i !== -1);
+    const word = raw.toLowerCase();
+
+    if (upper.length === 1) return { word, stressIndex: upper[0] };
+    if (upper.length === 0) {
+        const yoIndex = [...word].indexOf(YO);
+        if (yoIndex !== -1) return { word, stressIndex: yoIndex };
+    }
+    return null;
+}
+
+// Таблица для режима «Таблица» (строка `Mode: table` в txt).
+// Вопрос карточки делится по первому пробелу на строку и столбец: «sin 30°» -> sin / 30°.
+function buildTable(cards, file) {
+    const rows = [];
+    const cols = [];
+    const values = new Map();
+    cards.forEach((card) => {
+        const match = card.front.match(/^(\S+)\s+(.+)$/);
+        if (!match) {
+            console.warn(`⚠️ [${file}] «${card.front}» не попадет в таблицу: ожидается «строка столбец».`);
+            return;
+        }
+        const [, row, col] = match;
+        if (!rows.includes(row)) rows.push(row);
+        if (!cols.includes(col)) cols.push(col);
+        values.set(`${row}|${col}`, card.back);
+    });
+    const cells = rows.map((row) => cols.map((col) => values.get(`${row}|${col}`) ?? null));
+    return { rows, cols, cells };
+}
+
 // Функция для генерации ID колоды
 function generateDeckId(title) {
     return `deck-${slugify(title)}`;
@@ -31,9 +79,26 @@ files.forEach(file => {
 
     let currentDeck = null;
     let tempCards = [];
+    let tableMode = false;
     
     // Set для отслеживания дубликатов ID внутри одной колоды
-    let usedCardIds = new Set(); 
+    let usedCardIds = new Set();
+
+    // 🛡️ ГЕНЕРАЦИЯ СТАБИЛЬНОГО ID: из текста карточки,
+    // при совпадении внутри колоды добавляем цифру в конец
+    // Уточнение в скобках не влияет на ID: «sin 30° (π/6)» -> тот же ID, что у «sin 30°»,
+    // чтобы избранное не сбрасывалось при добавлении пояснений
+    const makeCardId = (text) => {
+        const baseCardId = `${currentDeck.id}--${slugify(text.replace(/\s*\([^)]*\)/g, ''))}`;
+        let finalCardId = baseCardId;
+        let counter = 1;
+        while (usedCardIds.has(finalCardId)) {
+            finalCardId = `${baseCardId}-${counter}`;
+            counter++;
+        }
+        usedCardIds.add(finalCardId);
+        return finalCardId;
+    };
 
     const finalizeDeck = () => {
         if (!currentDeck) return;
@@ -50,20 +115,26 @@ files.forEach(file => {
         }
         
         currentDeck.sections = sections;
+        if (tableMode) currentDeck.table = buildTable(tempCards, file);
         decks.push(currentDeck);
         currentDeck = null;
         tempCards = [];
+        tableMode = false;
     };
 
     lines.forEach(line => {
+        // Строки-комментарии (например, заголовки частей речи) пропускаем
+        if (line.startsWith('//')) return;
+
         if (line.startsWith('# Deck:')) {
             finalizeDeck();
             const title = line.replace('# Deck:', '').trim();
             currentDeck = { 
                 id: generateDeckId(title), 
                 title, 
-                subject: '', 
-                sections: [] 
+                subject: '',
+                type: 'basic',
+                sections: []
             };
             tempCards = [];
             usedCardIds = new Set(); // Сбрасываем дубликаты для новой колоды
@@ -75,25 +146,43 @@ files.forEach(file => {
             return;
         }
 
-        if (line.includes('->') && currentDeck) {
+        if (line.startsWith('Mode:') && currentDeck) {
+            tableMode = line.replace('Mode:', '').trim() === 'table';
+            return;
+        }
+
+        if (line.startsWith('Type:') && currentDeck) {
+            currentDeck.type = line.replace('Type:', '').trim();
+            return;
+        }
+
+        if (!currentDeck) return;
+
+        if (currentDeck.type === 'stress') {
+            // «слово (пояснение)» — пояснение показывается под словом, например для омографов
+            const [, rawWord, hint] = line.match(/^(.*?)\s*(?:\((.+)\))?$/);
+            const parsed = parseStressWord(rawWord);
+            if (!parsed) {
+                console.warn(`⚠️ [${file}] Пропущено «${line}»: нужна ровно одна заглавная ударная гласная.`);
+                return;
+            }
+            tempCards.push({
+                id: makeCardId(parsed.word),
+                front: parsed.word,
+                back: rawWord,
+                stressIndex: parsed.stressIndex,
+                ...(hint ? { hint } : {})
+            });
+            return;
+        }
+
+        if (line.includes('->')) {
             const [front, back] = line.split('->').map(s => s.trim());
             if (front && back) {
-                // 🛡️ ГЕНЕРАЦИЯ СТАБИЛЬНОГО ID
-                const baseCardId = `${currentDeck.id}--${slugify(front)}`;
-                let finalCardId = baseCardId;
-                let counter = 1;
-                
-                // Если такой ID уже есть в этой колоде, добавляем цифру в конец
-                while (usedCardIds.has(finalCardId)) {
-                    finalCardId = `${baseCardId}-${counter}`;
-                    counter++;
-                }
-                usedCardIds.add(finalCardId);
-
-                tempCards.push({ 
-                    id: finalCardId, 
-                    front, 
-                    back 
+                tempCards.push({
+                    id: makeCardId(front),
+                    front,
+                    back
                 });
             }
         }
@@ -101,6 +190,12 @@ files.forEach(file => {
     
     finalizeDeck();
 });
+
+// Не затираем существующий decks.js пустым массивом, если исходников нет
+if (decks.length === 0) {
+    console.warn(`⚠️ В ${TXT_DIR} не найдено ни одной колоды — ${OUTPUT_FILE} оставлен без изменений.`);
+    process.exit(0);
+}
 
 const jsContent = `// ⚠️ Этот файл сгенерирован автоматически из папки /txt.
 // НЕ РЕДАКТИРУЙТЕ ЕГО ВРУЧНУЮ! 

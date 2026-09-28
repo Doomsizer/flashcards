@@ -1,21 +1,62 @@
+:root {
+  /* Фон */
+  --bg: #1b1238;
+  --bg-raised: #221842;
+  --bg-glow-violet: rgba(150, 90, 255, 0.28);
+  --bg-glow-blue: rgba(122, 177, 235, 0.16);
+
+  /* Поверхности */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.09);
+  --card-front: linear-gradient(150deg, #36246f 0%, #282b72 100%);
+  --card-back: linear-gradient(150deg, #213a78 0%, #1d2a66 100%);
+
+  /* Текст */
+  --text: #f1eeff;
+  --text-muted: #a8a2d4;
+
+  /* Акценты */
+  --accent: #7ae9eb;
+  --accent-2: #7ab1eb;
+  --accent-soft: rgba(122, 233, 235, 0.14);
+  --yellow: #ffc233;
+  --green: #2fbf8a;
+  --green-light: #6ff0bd;
+  --red: #ec5f49;
+  --red-light: #ff9a8a;
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --shadow-card: 0 18px 40px -12px rgba(8, 4, 30, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 * {
   box-sizing: border-box;
-  --main-text: #ececec;
-  --header-text: #0823f3;
-  --accent-text: #6b6b7b;
-  
-  --main-first-color: rgb(24, 6, 32);
-  --main-second-color: #1a0241;
-  --main-yellow: #f5b301;
-  --main-green: #2fb380;
-  --main-red: #e1573f;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--main-first-color);
-  color: var(--main-text);
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(900px 520px at 110% -5%, var(--bg-glow-violet), transparent 60%),
+    radial-gradient(800px 480px at -15% 105%, var(--bg-glow-blue), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .screen {
@@ -26,28 +67,61 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   text-align: center;
-  margin: 8px 0 4px;
+  margin: 8px 0 6px;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 .subtitle {
-  color: #6b6b7b;
-  margin: 0 0 12px;
+  color: var(--text-muted);
+  margin: 0 0 14px;
   text-align: center;
 }
 
 .back-btn {
   align-self: flex-start;
-  background: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
   border: none;
-  color: #4a5bd4;
+  border-radius: 10px;
+  color: var(--accent);
   font-size: 0.95rem;
-  padding: 8px 0;
+  font-weight: 600;
+  padding: 8px 10px;
+  margin-left: -10px;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.back-btn:hover {
+  background: var(--accent-soft);
+}
+
+.arrow-icon {
+  flex-shrink: 0;
+  transition: translate 0.2s var(--ease-out);
+}
+
+.back-btn:hover .arrow-icon {
+  translate: -3px 0;
+}
+
+.btn:hover .arrow-icon {
+  translate: 3px 0;
 }
 
 /* --- Списки выбора (колоды / режимы) --- */
@@ -67,145 +141,622 @@ h1 {
   align-items: flex-start;
   gap: 4px;
   width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 14px;
-  background: var(--main-second-color);
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
   text-align: left;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
 }
 
 .deck-card:hover,
 .mode-card:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px);
+  background: var(--surface-hover);
+  border-color: rgba(122, 233, 235, 0.45);
+  box-shadow: 0 10px 28px -10px rgba(122, 233, 235, 0.35);
+  transform: translateY(-2px);
+}
+
+.deck-card:active,
+.mode-card:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .deck-subject {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--header-text);
-  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .deck-title,
 .mode-title {
-  font-size: 1.05rem;
-  color: var(--main-text);
-  font-weight: 600;
+  font-size: 1.08rem;
+  color: var(--text);
+  font-weight: 700;
 }
 
 .deck-count,
 .mode-desc {
+  font-size: 0.87rem;
+  color: var(--text-muted);
+}
+
+/* --- Прогресс --- */
+.progress {
+  color: var(--accent-2);
+  background: rgba(122, 177, 235, 0.12);
+  border-radius: 999px;
+  padding: 4px 12px;
   font-size: 0.85rem;
-  color: var(--accent-text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 16px;
 }
 
 /* --- Карточка --- */
-.progress {
-  color: var(--accent-text);
-  font-size: 0.9rem;
-  margin: 4px 0 12px;
-}
-
 .flashcard {
   position: relative;
   width: 100%;
-  min-height: 200px;
-  background: var(--main-second-color);
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 24px;
+  perspective: 1400px;
   cursor: pointer;
   user-select: none;
+  animation: card-in 0.35s var(--ease-out);
 }
 
-.flashcard-content {
-  flex: 1;
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.flashcard-inner {
+  display: grid;
+  min-height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.flashcard-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Невидимая сторона не должна ловить клики (звезда, гласные) */
+.flashcard-inner:not(.is-flipped) .flashcard-face-back,
+.flashcard-inner.is-flipped .flashcard-face-front {
+  pointer-events: none;
+}
+
+/* Обе стороны лежат в одной ячейке грида — высота карточки = высоте большей стороны */
+.flashcard-face {
+  position: relative;
+  grid-area: 1 / 1;
   display: flex;
-  color: var(--main-text);
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  padding: 36px 24px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-.flashcard-front {
-  font-size: 1.8rem;
-  font-weight: 600;
+.flashcard-face-front {
+  background: var(--card-front);
 }
 
-.flashcard-back {
-  font-size: 1.8rem;
+.flashcard-face-back {
+  background: var(--card-back);
+  border-color: rgba(122, 233, 235, 0.3);
+  transform: rotateY(180deg);
+}
+
+.flashcard:hover .flashcard-face-front {
+  border-color: rgba(122, 233, 235, 0.35);
+}
+
+.flashcard-static {
+  cursor: default;
+}
+
+/* Оборот карточки ударений: зеленый / красный в зависимости от ответа */
+.flashcard-face-correct {
+  background: linear-gradient(150deg, #1d5a5a 0%, #1d3f63 100%);
+  border-color: rgba(47, 191, 138, 0.55);
+}
+
+.flashcard-face-correct .flashcard-label,
+.flashcard-face-correct .flashcard-text {
+  color: var(--green-light);
+}
+
+.flashcard-face-wrong {
+  background: linear-gradient(150deg, #5a2350 0%, #3a2466 100%);
+  border-color: rgba(236, 95, 73, 0.55);
+}
+
+.flashcard-face-wrong .flashcard-label,
+.flashcard-face-wrong .flashcard-text {
+  color: var(--red-light);
+}
+
+/* --- Ударения --- */
+.stress-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stress-hint {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--main-text);
+  color: var(--text-muted);
+}
+
+.stress-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  /* Длинные слова (вероисповедание) должны помещаться на телефоне в одну строку */
+  font-size: clamp(1.3rem, 6vw, 1.9rem);
+  letter-spacing: 0.02em;
+}
+
+.stress-vowel {
+  font: inherit;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(122, 233, 235, 0.3);
+  border-radius: 10px;
+  padding: 0 4px;
+  margin: 0 1px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s var(--ease-out), box-shadow 0.15s ease;
+}
+
+.stress-vowel:hover:not(:disabled) {
+  background: rgba(122, 233, 235, 0.28);
+  box-shadow: 0 6px 16px -6px rgba(122, 233, 235, 0.6);
+  transform: translateY(-2px);
+}
+
+.stress-vowel:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.stress-vowel:disabled {
+  cursor: default;
+}
+
+.stress-correct {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+.stress-wrong-choice {
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 3px;
+  opacity: 0.8;
+}
+
+.flashcard-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.flashcard-text-back {
   white-space: pre-line;
 }
 
-.flashcard-hint {
-  font-size: 0.8rem;
-  color: var(--accent-text);
-  margin: 12px 0 0;
-  min-height: 1em;
+.flashcard-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
 }
 
+.flashcard-hint {
+  margin: 14px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* --- Избранное --- */
 .fav-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
   border: none;
-  background: none;
-  font-size: 1.4rem;
-  color: var(--main-text);
-  cursor: pointer;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.5rem;
   line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.2s ease;
 }
 
-.fav-btn-active {
-  color: var(--main-yellow);
+.fav-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
 }
 
-/* --- Кнопки ответа --- */
+.fav-btn-active,
+.fav-btn-active:hover {
+  color: var(--yellow);
+}
+
+.fav-star {
+  position: relative;
+  display: inline-block;
+}
+
+.fav-btn-active .fav-star {
+  text-shadow: 0 0 14px rgba(255, 194, 51, 0.55);
+}
+
+.fav-star-pop {
+  animation: star-pop 0.55s var(--ease-out);
+}
+
+/* Кольцо, расходящееся от звезды */
+.fav-star-pop::before,
+.fav-star-pop::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+.fav-star-pop::before {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 2px solid var(--yellow);
+  animation: star-ring 0.5s ease-out forwards;
+}
+
+/* Искорки: одна точка + ее копии через box-shadow */
+.fav-star-pop::after {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow:
+    0 -20px 0 var(--yellow),
+    14px -14px 0 var(--accent),
+    20px 0 0 var(--yellow),
+    14px 14px 0 var(--accent),
+    0 20px 0 var(--yellow),
+    -14px 14px 0 var(--accent),
+    -20px 0 0 var(--yellow),
+    -14px -14px 0 var(--accent);
+  animation: star-sparks 0.55s ease-out forwards;
+}
+
+@keyframes star-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.65) rotate(-14deg); }
+  55% { transform: scale(0.85) rotate(6deg); }
+  75% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes star-ring {
+  from { transform: scale(0.3); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes star-sparks {
+  0% { transform: scale(0.3); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* --- Кнопки --- */
 .answer-buttons {
   display: flex;
   gap: 12px;
   width: 100%;
   margin-top: 20px;
+  transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
+}
+
+.answer-buttons-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
 }
 
 .btn {
   flex: 1;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  background-color: var(--main-second-color);
-  color: var(--main-text);
+  background: var(--surface-hover);
+  color: var(--text);
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-correct {
-  background: var(--main-green);
+  border-color: transparent;
+  background: linear-gradient(150deg, #37cf97, var(--green));
+  box-shadow: 0 8px 20px -8px rgba(47, 191, 138, 0.7);
 }
 
 .btn-wrong {
-  background: var(--main-red);
+  border-color: transparent;
+  background: linear-gradient(150deg, #f57561, var(--red));
+  box-shadow: 0 8px 20px -8px rgba(236, 95, 73, 0.7);
+}
+
+.btn-next {
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
 }
 
 .summary {
   width: 100%;
   text-align: center;
   margin-top: 24px;
+  padding: 28px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  animation: card-in 0.35s var(--ease-out);
+}
+
+.summary p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.summary .btn {
+  flex: none;
+  min-width: 220px;
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+.mode-card-special {
+  border-color: rgba(122, 233, 235, 0.4);
+  background: linear-gradient(150deg, rgba(122, 233, 235, 0.12), rgba(122, 177, 235, 0.06));
+}
+
+/* --- Режим «Таблица» --- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  padding: 8px;
+}
+
+.learn-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.table-head {
+  padding: 6px 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.table-head-main,
+.table-head-sub {
+  display: block;
+}
+
+.table-head-sub {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Названия функций прилипают к левому краю при горизонтальной прокрутке на телефоне */
+.table-head-row {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  color: var(--accent-2);
+  text-align: left;
+  padding-right: 8px;
+  background: var(--bg-raised);
+  border-radius: 8px;
+}
+
+.table-cell {
+  height: 40px;
+  min-width: 48px;
+  padding: 0 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-cell-none {
+  background: transparent;
+}
+
+.table-cell-blank {
+  padding: 0;
+  background: transparent;
+}
+
+.table-blank {
+  width: 100%;
+  height: 40px;
+  border: 1.5px dashed rgba(122, 233, 235, 0.45);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.table-blank:hover {
+  background: var(--accent-soft);
+}
+
+.table-blank.is-active {
+  border-style: solid;
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  animation: blank-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes blank-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 233, 235, 0.45); }
+  50% { box-shadow: 0 0 0 5px rgba(122, 233, 235, 0); }
+}
+
+.table-cell-ok {
+  background: rgba(47, 191, 138, 0.2);
+  color: var(--green-light);
+  animation: cell-pop 0.35s var(--ease-out);
+}
+
+.table-cell-wrong {
+  background: rgba(236, 95, 73, 0.22);
+  color: var(--red-light);
+  animation: cell-shake 0.4s ease;
+}
+
+@keyframes cell-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cell-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+.table-legend {
+  align-self: flex-end;
+  margin: 8px 4px 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.table-picker {
+  width: 100%;
+  margin-top: 16px;
+  animation: card-in 0.3s var(--ease-out);
+}
+
+.table-question {
+  margin: 0 0 12px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.table-question-mark {
+  color: var(--accent);
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 8px;
+}
+
+.option-btn {
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-hover);
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s var(--ease-out);
+}
+
+.option-btn:hover {
+  border-color: rgba(122, 233, 235, 0.5);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+}
+
+.option-btn:active {
+  transform: scale(0.95);
 }
 
 /* --- Адаптив под ПК: чуть шире и крупнее --- */
@@ -215,11 +766,20 @@ h1 {
     padding-top: 40px;
   }
 
-  .flashcard {
-    min-height: 260px;
+  .flashcard-inner {
+    min-height: 280px;
   }
 
-  .flashcard-front {
-    font-size: 1.8rem;
+  .flashcard-text {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
