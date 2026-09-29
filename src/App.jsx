@@ -1,29 +1,56 @@
-import React, { useState } from 'react';
-import decks from './data/decks';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import deckIndex from './data/generated/deckIndex';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { favoritesKey } from './utils/favorites';
-import DeckSelector from './components/DeckSelector';
+import { useUserDecks } from './hooks/useUserDecks';
+import { favoritesKey, pruneDeckFavorites, removeOrphanFavorites } from './utils/favorites';
+import { downloadText, deckFileName } from './utils/download';
+import HomeScreen from './components/HomeScreen';
+import CollectionScreen from './components/CollectionScreen';
 import ModeSelector from './components/ModeSelector';
-import ShuffleMode from './components/ShuffleMode';
-import LearnMode from './components/LearnMode';
-import TableMode from './components/TableMode';
 import GithubLink from './components/GithubLink';
-import FavoritesScreen from './components/FavoritesScreen';
+import LoadingScreen from './components/LoadingScreen';
+import LoadErrorBoundary from './components/LoadErrorBoundary';
 import './App.css';
+
+// Экраны режимов грузятся отдельными файлами, только когда нужны.
+// Частые (prefetch) браузер скачивает заранее в свободное время, чтобы переход был мгновенным.
+const ShuffleMode = lazy(() => import(/* webpackChunkName: "shuffle-mode", webpackPrefetch: true */ './components/ShuffleMode'));
+const LearnMode = lazy(() => import(/* webpackChunkName: "learn-mode", webpackPrefetch: true */ './components/LearnMode'));
+const FavoritesScreen = lazy(() => import(/* webpackChunkName: "favorites", webpackPrefetch: true */ './components/FavoritesScreen'));
+const TableMode = lazy(() => import(/* webpackChunkName: "table-mode" */ './components/TableMode'));
+const DeckEditor = lazy(() => import(/* webpackChunkName: "deck-editor" */ './components/DeckEditor'));
 
 function allCardsOf(d) {
   return d.sections.flatMap((s) => s.cards);
 }
 
 export default function App() {
+  // Открытая коллекция: null — главный экран, 'builtin' — готовые колоды, 'user' — свои
+  const [collection, setCollection] = useState(null);
   const [deck, setDeck] = useState(null);
   const [mode, setMode] = useState(null);
   // Набор карточек для ShuffleMode фиксируется при входе в режим,
   // чтобы клик по ☆ не перемешивал колоду заново посреди прохода
   const [sessionCards, setSessionCards] = useState([]);
+  // Редактор своей колоды: null — закрыт, { deckId: null } — новая, { deckId, source } — правка
+  const [editor, setEditor] = useState(null);
+  // Подгрузка встроенной колоды: какая грузится сейчас и какая не загрузилась
+  const [loadingId, setLoadingId] = useState(null);
+  const [failedId, setFailedId] = useState(null);
+  const openRequest = useRef(0);
+
+  const userDecks = useUserDecks();
 
   // Избранное хранится отдельно для каждой колоды: favorites:<deckId> -> [id, id, ...]
   const [favIds, setFavIds] = useLocalStorage(deck ? favoritesKey(deck.id) : null, []);
+
+  // Когда известны все колоды (встроенные + свои), чистим избранное удаленных колод.
+  // Если хранилище своих колод недоступно, не чистим: иначе пропало бы их избранное.
+  useEffect(() => {
+    if (userDecks.status !== 'ready') return;
+    removeOrphanFavorites([...deckIndex.map((d) => d.id), ...userDecks.records.map((r) => r.id)]);
+    // Зависит только от статуса: чистка нужна один раз, сразу после загрузки списка своих колод
+  }, [userDecks.status]);
 
   function isFavorite(cardId) {
     return favIds.includes(cardId);
@@ -33,9 +60,37 @@ export default function App() {
     setFavIds((ids) => (ids.includes(cardId) ? ids.filter((id) => id !== cardId) : [...ids, cardId]));
   }
 
+  // «Назад» из колоды ведет в ее коллекцию, даже если колоду нашли поиском на главном экране
+  function showDeck(data) {
+    pruneDeckFavorites(data);
+    setCollection(data.isUser ? 'user' : 'builtin');
+    setMode(null);
+    setDeck(data);
+  }
+
+  // Встроенная колода подгружается отдельным файлом; своя уже в памяти.
+  // Если за время загрузки выбрали другую колоду — результат старой загрузки игнорируем.
+  async function openDeck(entry) {
+    const request = ++openRequest.current;
+    setFailedId(null);
+    if (entry.isUser) {
+      setLoadingId(null);
+      showDeck(entry);
+      return;
+    }
+    setLoadingId(entry.id);
+    try {
+      const data = await entry.load();
+      if (request === openRequest.current) showDeck(data);
+    } catch (e) {
+      if (request === openRequest.current) setFailedId(entry.id);
+    } finally {
+      if (request === openRequest.current) setLoadingId(null);
+    }
+  }
+
   function selectMode(m) {
-    const all = allCardsOf(deck);
-    if (m === 'free') setSessionCards(all);
+    if (m === 'free') setSessionCards(allCardsOf(deck));
     setMode(m);
   }
 
@@ -44,9 +99,32 @@ export default function App() {
     setMode('favoritesRun');
   }
 
-  function goHome() {
+  async function saveEditedDeck(source) {
+    const saved = await userDecks.save(source, editor.deckId);
+    if (!saved) throw new Error('Колода не разобралась после сохранения');
+    setEditor(null);
+    showDeck(saved);
+  }
+
+  async function deleteCurrentDeck() {
+    await userDecks.remove(deck.id);
     setMode(null);
     setDeck(null);
+  }
+
+  function goHome() {
+    openRequest.current++;
+    setLoadingId(null);
+    setFailedId(null);
+    setEditor(null);
+    setMode(null);
+    setDeck(null);
+    setCollection(null);
+  }
+
+  function openCollection(kind) {
+    setFailedId(null);
+    setCollection(kind);
   }
 
   return (
@@ -59,7 +137,9 @@ export default function App() {
           <span className="app-logo-heart" aria-hidden="true">❤</span>
         </button>
       </header>
-      {renderScreen()}
+      <LoadErrorBoundary>
+        <Suspense fallback={<LoadingScreen />}>{renderScreen()}</Suspense>
+      </LoadErrorBoundary>
       <footer className="app-footer">
         <GithubLink />
       </footer>
@@ -67,8 +147,44 @@ export default function App() {
   );
 
   function renderScreen() {
+    if (editor) {
+      return (
+        <DeckEditor
+          initialSource={editor.source || ''}
+          isEdit={Boolean(editor.deckId)}
+          onSave={saveEditedDeck}
+          onCancel={() => setEditor(null)}
+        />
+      );
+    }
+
+    if (!deck && collection) {
+      return (
+        <CollectionScreen
+          kind={collection}
+          decks={collection === 'user' ? userDecks.decks : deckIndex}
+          userDecksStatus={userDecks.status}
+          loadingId={loadingId}
+          failedId={failedId}
+          onSelectDeck={openDeck}
+          onAdd={() => setEditor({ deckId: null })}
+          onBack={goHome}
+        />
+      );
+    }
+
     if (!deck) {
-      return <DeckSelector decks={decks} onSelect={(d) => setDeck(d)} />;
+      return (
+        <HomeScreen
+          builtinDecks={deckIndex}
+          userDecks={userDecks.decks}
+          userDecksStatus={userDecks.status}
+          loadingId={loadingId}
+          failedId={failedId}
+          onOpenCollection={openCollection}
+          onSelectDeck={openDeck}
+        />
+      );
     }
 
     if (!mode) {
@@ -78,6 +194,9 @@ export default function App() {
           favoritesCount={favIds.length}
           onSelect={selectMode}
           onBack={() => setDeck(null)}
+          onEdit={() => setEditor({ deckId: deck.id, source: deck.source })}
+          onExport={() => downloadText(deckFileName(deck.title), deck.source)}
+          onDelete={deleteCurrentDeck}
         />
       );
     }
@@ -103,7 +222,8 @@ export default function App() {
         <ShuffleMode
           title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
           cards={sessionCards}
-          kind={deck.type}
+          // Формулы в прогоне — обычные карточки без сборки: сборка только в «Обучении»
+          kind={deck.type === 'build' ? 'formula' : deck.type}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
           // Из прогона избранного возвращаемся к списку избранного

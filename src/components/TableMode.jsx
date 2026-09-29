@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import BackButton from './BackButton';
 import ArrowIcon from './ArrowIcon';
+import { ColLabel, NOT_EXISTS, displayValue } from './TableParts';
 import { shuffle } from '../utils/shuffle';
 
 // Число пропусков на уровнях: 1, 2, 3, дальше примерно x1.5, последний уровень — вся таблица
@@ -34,24 +35,6 @@ function compareValues(a, b) {
   if (!Number.isFinite(x)) return 1;
   if (!Number.isFinite(y)) return -1;
   return x - y;
-}
-
-const NOT_EXISTS = '-';
-
-function displayValue(v) {
-  return v === NOT_EXISTS ? '—' : v;
-}
-
-// Заголовок столбца «30° (π/6)» рисуется в две строки: градусы сверху, пояснение снизу
-function renderColLabel(label) {
-  const m = label.match(/^(.*?)\s*\((.+)\)$/);
-  if (!m) return label;
-  return (
-    <>
-      <span className="table-head-main">{m[1]}</span>
-      <span className="table-head-sub">{m[2]}</span>
-    </>
-  );
 }
 
 // Режим «Таблица»: пропуски в таблице заполняются из вариантов.
@@ -175,7 +158,7 @@ export default function TableMode({ deck, onBack }) {
               <th className="table-corner" />
               {view.colLabels.map((label) => (
                 <th key={label} className="table-head">
-                  {renderColLabel(label)}
+                  <ColLabel label={label} />
                 </th>
               ))}
             </tr>

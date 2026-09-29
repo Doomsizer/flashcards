@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BackButton from './BackButton';
 
-export default function ModeSelector({ deck, favoritesCount, onSelect, onBack }) {
+export default function ModeSelector({ deck, favoritesCount, onSelect, onBack, onEdit, onExport, onDelete }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteFailed, setDeleteFailed] = useState(false);
+  // У колод формул сборка — в «Обучении», а в свободном режиме обычные карточки
+  const isBuild = deck.type === 'build';
+
+  async function handleDelete() {
+    setDeleting(true);
+    setDeleteFailed(false);
+    try {
+      await onDelete();
+    } catch (e) {
+      setDeleting(false);
+      setDeleteFailed(true);
+    }
+  }
+
   return (
     <div className="screen">
-      <BackButton onClick={onBack}>Сменить словарь</BackButton>
+      <BackButton onClick={onBack}>К колодам</BackButton>
       <h1>{deck.title}</h1>
       <p className="subtitle">Выбери режим</p>
       <div className="mode-list">
@@ -16,7 +33,9 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack })
         )}
         <button className="mode-card" onClick={() => onSelect('free')}>
           <span className="mode-title">Свободный режим</span>
-          <span className="mode-desc">Все карточки в разброс, без повторов</span>
+          <span className="mode-desc">
+            {isBuild ? 'Все формулы вразброс: вспомни и переверни карточку' : 'Все карточки в разброс, без повторов'}
+          </span>
         </button>
         <button className="mode-card" onClick={() => onSelect('favorites')}>
           <span className="mode-title">Избранное ({favoritesCount})</span>
@@ -24,9 +43,42 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack })
         </button>
         <button className="mode-card" onClick={() => onSelect('learn')}>
           <span className="mode-title">Обучение</span>
-          <span className="mode-desc">По разделам, с повтором ошибок и тестом в конце</span>
+          <span className="mode-desc">
+            {isBuild
+              ? 'Собираешь формулы из частей по разделам, с повтором ошибок и тестом в конце'
+              : 'По разделам, с повтором ошибок и тестом в конце'}
+          </span>
         </button>
       </div>
+
+      {deck.isUser && (
+        <div className="deck-tools">
+          {confirmDelete ? (
+            <>
+              <p>Удалить колоду «{deck.title}» вместе с избранным? Вернуть ее не получится.</p>
+              <button className="link-btn link-btn-danger" onClick={handleDelete} disabled={deleting}>
+                {deleting ? 'Удаляю...' : 'Да, удалить'}
+              </button>
+              <button className="link-btn" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+                Отмена
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="link-btn" onClick={onEdit}>
+                Редактировать
+              </button>
+              <button className="link-btn" onClick={onExport}>
+                Скачать .txt
+              </button>
+              <button className="link-btn link-btn-danger" onClick={() => setConfirmDelete(true)}>
+                Удалить
+              </button>
+            </>
+          )}
+          {deleteFailed && <p className="notice notice-error">Не получилось удалить колоду. Попробуй еще раз.</p>}
+        </div>
+      )}
     </div>
   );
 }

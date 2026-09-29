@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Flashcard from './Flashcard';
-import AnswerButtons from './AnswerButtons';
-import ArrowIcon from './ArrowIcon';
+import AnswerButtons, { NextButton } from './AnswerButtons';
+import BuildCard from './BuildCard';
+import { FormulaQuestion, FormulaAnswer } from './Formula';
 import { StressChoice, StressAnswer } from './StressWord';
 import { VowelBlank, VowelAnswer, vowelOptions } from './VowelWord';
 
@@ -9,7 +10,9 @@ import { VowelBlank, VowelAnswer, vowelOptions } from './VowelWord';
 // поэтому родитель должен задавать новый key на каждый показ.
 // kind: 'basic'  — «знал / не знал» после переворота;
 //       'stress' — выбор ударной гласной в слове;
-//       'vowel'  — выбор пропущенной гласной из вариантов под карточкой.
+//       'vowel'  — выбор пропущенной гласной из вариантов под карточкой;
+//       'build'  — сборка формулы из перемешанных частей (режим «Обучение»);
+//       'formula' — карточка формулы без сборки: название -> переворот -> формула (свободный режим).
 export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFavorite, onAnswer }) {
   const [flipped, setFlipped] = useState(false);
   const [choice, setChoice] = useState(null);
@@ -17,17 +20,6 @@ export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFa
   function choose(value) {
     setChoice(value);
     setFlipped(true);
-  }
-
-  function renderNext(correct) {
-    return (
-      <div className={`answer-buttons ${flipped ? '' : 'answer-buttons-hidden'}`} aria-hidden={!flipped}>
-        <button className="btn btn-next" disabled={!flipped} onClick={() => onAnswer(correct)}>
-          <span>Дальше</span>
-          <ArrowIcon direction="right" />
-        </button>
-      </div>
-    );
   }
 
   // Общие свойства карточек с автоматической проверкой ответа
@@ -41,6 +33,27 @@ export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFa
     };
   }
 
+  if (kind === 'build') {
+    return <BuildCard card={card} isFavorite={isFavorite} onToggleFavorite={onToggleFavorite} onAnswer={onAnswer} />;
+  }
+
+  if (kind === 'formula') {
+    return (
+      <>
+        <Flashcard
+          front={<FormulaQuestion card={card} />}
+          back={<FormulaAnswer card={card} />}
+          hint="вспомни формулу и нажми, чтобы проверить"
+          flipped={flipped}
+          onFlip={() => setFlipped((f) => !f)}
+          isFavorite={isFavorite}
+          onToggleFavorite={onToggleFavorite}
+        />
+        <AnswerButtons visible={flipped} onAnswer={onAnswer} />
+      </>
+    );
+  }
+
   if (kind === 'stress') {
     const correct = choice === card.stressIndex;
     return (
@@ -51,7 +64,7 @@ export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFa
           hint="выбери ударную гласную"
           {...checkedCardProps(correct)}
         />
-        {renderNext(correct)}
+        <NextButton visible={flipped} onClick={() => onAnswer(correct)} />
       </>
     );
   }
@@ -68,7 +81,7 @@ export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFa
           {...checkedCardProps(correct)}
         />
         {flipped ? (
-          renderNext(correct)
+          <NextButton visible onClick={() => onAnswer(correct)} />
         ) : (
           <div className="answer-buttons">
             {vowelOptions(letter).map((option) => (

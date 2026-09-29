@@ -1,11 +1,5 @@
 import React from 'react';
-
-// Буква е с точками задана кодом символа, чтобы не писать ее в коде
-const VOWELS = 'аеиоуыэюя' + String.fromCharCode(0x451);
-
-function isVowel(ch) {
-  return VOWELS.includes(ch.toLowerCase());
-}
+import { isVowel } from '../deckFormat/parseDeck.mjs';
 
 // Слово + необязательное пояснение под ним (например, для омографов: «отзыв (посла из страны)»)
 function WithHint({ hint, children }) {

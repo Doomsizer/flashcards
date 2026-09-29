@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FavButton from './FavButton';
-import { cardText } from '../utils/cardText';
+import { CardRowContent } from './CardPreview';
 
 // Итоги прохода: статистика, список ошибок с добавлением в избранное, повтор ошибок
 export default function SessionSummary({ kind, correct, mistakes, isFavorite, onToggleFavorite, onRetryMistakes, onRestart }) {
@@ -45,18 +45,12 @@ export default function SessionSummary({ kind, correct, mistakes, isFavorite, on
           {showMistakes && (
             <div className="mistakes">
               <ul className="card-list">
-                {mistakes.map((card) => {
-                  const { main, sub } = cardText(card, kind);
-                  return (
-                    <li key={card.id} className="card-row card-row-wrong">
-                      <div className="card-row-text">
-                        <span className="card-row-main">{main}</span>
-                        {sub && <span className="card-row-sub">{sub}</span>}
-                      </div>
-                      <FavButton isFavorite={isFavorite(card.id)} onToggle={() => onToggleFavorite(card.id)} />
-                    </li>
-                  );
-                })}
+                {mistakes.map((card) => (
+                  <li key={card.id} className="card-row card-row-wrong">
+                    <CardRowContent card={card} kind={kind} />
+                    <FavButton isFavorite={isFavorite(card.id)} onToggle={() => onToggleFavorite(card.id)} />
+                  </li>
+                ))}
               </ul>
               <button className="btn btn-ghost" onClick={addAllToFavorites} disabled={notFavorite.length === 0}>
                 {notFavorite.length === 0 ? 'Все ошибки в избранном' : 'Все в избранное'}

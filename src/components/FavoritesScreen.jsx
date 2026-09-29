@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BackButton from './BackButton';
 import FavButton from './FavButton';
-import { cardText } from '../utils/cardText';
+import { CardRowContent } from './CardPreview';
 
 // Экран избранного: список с поиском, снятие звезд, очистка и запуск прогона.
 // Список фиксируется при открытии экрана: карточка со снятой звездой остается видна
@@ -48,14 +48,10 @@ export default function FavoritesScreen({ deck, favIds, isFavorite, onToggleFavo
             ) : (
               <ul className="card-list">
                 {visibleCards.map((card) => {
-                  const { main, sub } = cardText(card, deck.type);
                   const active = isFavorite(card.id);
                   return (
                     <li key={card.id} className={`card-row ${active ? '' : 'card-row-removed'}`}>
-                      <div className="card-row-text">
-                        <span className="card-row-main">{main}</span>
-                        {sub && <span className="card-row-sub">{sub}</span>}
-                      </div>
+                      <CardRowContent card={card} kind={deck.type} />
                       <FavButton isFavorite={active} onToggle={() => onToggleFavorite(card.id)} />
                     </li>
                   );
