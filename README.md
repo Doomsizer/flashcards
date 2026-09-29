@@ -63,8 +63,4 @@ npm run deploy     # сборка и публикация на GitHub Pages (в�
 
 React 18, Webpack 5, Babel. Без бэкенда — все данные в бандле, избранное в `localStorage`.
 
-
-
-
-
-by Doomsizer with ❤
+by Doomsizer with love ❤

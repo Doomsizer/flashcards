@@ -1,14 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import CardStage from './CardStage';
 import BackButton from './BackButton';
+import ScoreCounter from './ScoreCounter';
+import SessionSummary from './SessionSummary';
 import { shuffle } from '../utils/shuffle';
 
 // Используется и для "Свободной прогонки", и для "Избранного" —
 // один проход по перемешанным карточкам, без повтора ошибок.
+// В конце — статистика и список ошибок (можно добавить в избранное или прогнать заново).
 export default function ShuffleMode({ cards, kind, title, isFavorite, onToggleFavorite, onBack }) {
-  const queue = useMemo(() => shuffle(cards), [cards]);
+  const [queue, setQueue] = useState(() => shuffle(cards));
   const [index, setIndex] = useState(0);
-  const [score, setScore] = useState({ correct: 0, wrong: 0 });
+  const [correct, setCorrect] = useState(0);
+  const [mistakes, setMistakes] = useState([]);
 
   if (cards.length === 0) {
     return (
@@ -23,14 +27,17 @@ export default function ShuffleMode({ cards, kind, title, isFavorite, onToggleFa
   const finished = index >= queue.length;
   const current = !finished ? queue[index] : null;
 
-  function answer(correct) {
-    setScore((s) => ({ ...s, [correct ? 'correct' : 'wrong']: s[correct ? 'correct' : 'wrong'] + 1 }));
+  function answer(isCorrect) {
+    if (isCorrect) setCorrect((n) => n + 1);
+    else setMistakes((list) => [...list, current]);
     setIndex((i) => i + 1);
   }
 
-  function restart() {
+  function startRun(runCards) {
+    setQueue(shuffle(runCards));
     setIndex(0);
-    setScore({ correct: 0, wrong: 0 });
+    setCorrect(0);
+    setMistakes([]);
   }
 
   return (
@@ -40,9 +47,12 @@ export default function ShuffleMode({ cards, kind, title, isFavorite, onToggleFa
 
       {!finished ? (
         <>
-          <p className="progress">
-            {index + 1} / {queue.length}
-          </p>
+          <div className="session-bar">
+            <p className="progress">
+              {index + 1} / {queue.length}
+            </p>
+            <ScoreCounter correct={correct} wrong={mistakes.length} />
+          </div>
           <CardStage
             key={`${index}-${current.id}`}
             card={current}
@@ -53,13 +63,15 @@ export default function ShuffleMode({ cards, kind, title, isFavorite, onToggleFa
           />
         </>
       ) : (
-        <div className="summary">
-          <h2>Готово!</h2>
-          <p>
-            Правильно: {score.correct} · Ошибок: {score.wrong}
-          </p>
-          <button className="btn" onClick={restart}>Пройти еще раз</button>
-        </div>
+        <SessionSummary
+          kind={kind}
+          correct={correct}
+          mistakes={mistakes}
+          isFavorite={isFavorite}
+          onToggleFavorite={onToggleFavorite}
+          onRetryMistakes={() => startRun(mistakes)}
+          onRestart={() => startRun(cards)}
+        />
       )}
     </div>
   );

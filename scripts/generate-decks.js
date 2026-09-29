@@ -176,6 +176,27 @@ files.forEach(file => {
             return;
         }
 
+        if (currentDeck.type === 'vowel') {
+            // «к(?)мпания (друзей) -> компания»: (?) — пропуск, в скобках — необязательное пояснение
+            const [rawFront, back] = line.split('->').map(s => s.trim());
+            if (!rawFront || !back) return;
+            const [, front, hint] = rawFront.match(/^(.*?)\s*(?:\((?!\?\))([^)]+)\))?$/);
+            const blankIndex = front.indexOf('(?)');
+            const letter = back[blankIndex];
+            if (blankIndex === -1 || !letter || front.replace('(?)', letter).toLowerCase() !== back.toLowerCase()) {
+                console.warn(`⚠️ [${file}] Пропущено «${line}»: вопрос с (?) не сходится с ответом.`);
+                return;
+            }
+            tempCards.push({
+                id: makeCardId(front),
+                front,
+                back,
+                blankIndex,
+                ...(hint ? { hint } : {})
+            });
+            return;
+        }
+
         if (line.includes('->')) {
             const [front, back] = line.split('->').map(s => s.trim());
             if (front && back) {

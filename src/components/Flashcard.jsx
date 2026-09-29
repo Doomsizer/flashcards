@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import FavButton from './FavButton';
 
 // Оболочка карточки: обе стороны рендерятся всегда и переворачиваются через CSS 3D.
 // front/back — любое содержимое. Если onFlip не передан, клик по карточке ее не переворачивает.
@@ -15,32 +16,17 @@ export default function Flashcard({
   isFavorite,
   onToggleFavorite,
 }) {
-  // Счетчик для перезапуска анимации «поп» при каждом добавлении в избранное
-  const [popCount, setPopCount] = useState(0);
-
-  function handleFavorite(e) {
-    e.stopPropagation();
-    if (!isFavorite) setPopCount((n) => n + 1);
-    onToggleFavorite();
-  }
-
   // Звезда рисуется на каждой стороне отдельно, чтобы переворачиваться вместе с карточкой.
   // Кнопка на невидимой стороне убирается из фокуса.
   function renderFavButton(faceVisible) {
     if (!onToggleFavorite) return null;
     return (
-      <button
-        className={`fav-btn ${isFavorite ? 'fav-btn-active' : ''}`}
-        onClick={handleFavorite}
-        tabIndex={faceVisible ? 0 : -1}
-        aria-hidden={!faceVisible}
-        aria-label={isFavorite ? 'Убрать из избранного' : 'В избранное'}
-        aria-pressed={isFavorite}
-      >
-        <span key={popCount} className={`fav-star ${popCount > 0 && isFavorite ? 'fav-star-pop' : ''}`}>
-          {isFavorite ? '★' : '☆'}
-        </span>
-      </button>
+      <FavButton
+        className="fav-btn-corner"
+        isFavorite={isFavorite}
+        onToggle={onToggleFavorite}
+        hidden={!faceVisible}
+      />
     );
   }
 

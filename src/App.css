@@ -357,6 +357,65 @@ h2 {
   color: var(--red-light);
 }
 
+/* --- Пропущенные гласные --- */
+.vowel-word {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: clamp(1.4rem, 6.5vw, 2rem);
+  letter-spacing: 0.02em;
+}
+
+/* Пустая ячейка на месте пропуска */
+.vowel-slot {
+  display: inline-block;
+  width: 0.72em;
+  height: 1.05em;
+  margin: 0 0.08em;
+  align-self: center;
+  border-radius: 8px;
+  border: 2px dashed rgba(122, 233, 235, 0.6);
+  background: var(--accent-soft);
+  animation: slot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes slot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 233, 235, 0.35); }
+  50% { box-shadow: 0 0 0 5px rgba(122, 233, 235, 0); }
+}
+
+/* Вставленная буква на обороте */
+.vowel-letter {
+  padding: 0 0.06em;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+/* Выбранный неверный вариант — маленький зачеркнутый рядом со словом */
+.vowel-wrong-choice {
+  margin-left: 0.5em;
+  font-size: 0.6em;
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+}
+
+/* Кнопки вариантов ответа под карточкой */
+.btn-option {
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-color: rgba(122, 233, 235, 0.35);
+  background: var(--accent-soft);
+  color: var(--accent);
+  animation: card-in 0.3s var(--ease-out);
+}
+
 /* --- Ударения --- */
 .stress-block {
   display: flex;
@@ -446,10 +505,7 @@ h2 {
 
 /* --- Избранное --- */
 .fav-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   display: grid;
@@ -462,6 +518,14 @@ h2 {
   line-height: 1;
   cursor: pointer;
   transition: background-color 0.15s ease, color 0.2s ease;
+}
+
+/* Звезда в углу карточки */
+.fav-btn-corner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
 }
 
 .fav-btn-active {
@@ -620,6 +684,288 @@ h2 {
   background: linear-gradient(150deg, var(--accent), var(--accent-2));
   color: #14102e;
   box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+/* Второстепенная кнопка: прозрачная с голубой рамкой */
+.summary .btn-ghost {
+  border-color: rgba(122, 233, 235, 0.4);
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
+
+.summary .btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* --- Счетчик ответов во время прохода --- */
+.session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.session-bar .progress {
+  margin: 0;
+}
+
+.score-counter {
+  display: flex;
+  gap: 6px;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 42px;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Цветная точка перед числом */
+.score-pill::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.score-pill-correct {
+  color: var(--green-light);
+  background: rgba(47, 191, 138, 0.16);
+}
+
+.score-pill-wrong {
+  color: var(--red-light);
+  background: rgba(236, 95, 73, 0.16);
+}
+
+.score-value {
+  display: inline-block;
+  animation: score-bump 0.35s var(--ease-out);
+}
+
+@keyframes score-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.45); }
+  100% { transform: scale(1); }
+}
+
+/* --- Итоги прохода --- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.stat-correct .stat-value {
+  color: var(--green-light);
+}
+
+.stat-wrong .stat-value {
+  color: var(--red-light);
+}
+
+.stats-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(236, 95, 73, 0.55);
+}
+
+.stats-bar-correct {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #37cf97, var(--green));
+  transition: width 0.6s var(--ease-out);
+}
+
+.mistakes {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: card-in 0.3s var(--ease-out);
+}
+
+/* --- Списки карточек (ошибки, избранное) --- */
+.card-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 14px;
+  border-radius: 12px;
+  border-left: 3px solid var(--accent);
+  background: rgba(255, 255, 255, 0.04);
+  transition: opacity 0.2s ease;
+}
+
+.card-row-wrong {
+  border-left-color: var(--red);
+}
+
+/* Убранная из избранного карточка остается видна, чтобы можно было вернуть звезду */
+.card-row-removed {
+  opacity: 0.45;
+  border-left-color: transparent;
+}
+
+.card-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-row-main {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.card-row-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* --- Экран избранного --- */
+.fav-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.fav-screen .btn {
+  flex: none;
+  width: 100%;
+}
+
+.btn-primary {
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  /* Не меньше 16px: иначе iPhone приближает страницу при фокусе на поле */
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: rgba(122, 233, 235, 0.55);
+}
+
+.fav-empty {
+  margin: 8px 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.clear-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.clear-zone p {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.link-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-btn-danger {
+  color: var(--red-light);
 }
 
 .mode-card-special {
@@ -852,6 +1198,10 @@ h2 {
 
   .app-logo:hover {
     color: var(--text);
+  }
+
+  .link-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
   }
 
   .github-link:hover {

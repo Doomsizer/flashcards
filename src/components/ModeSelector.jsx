@@ -20,7 +20,7 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack })
         </button>
         <button className="mode-card" onClick={() => onSelect('favorites')}>
           <span className="mode-title">Избранное ({favoritesCount})</span>
-          <span className="mode-desc">Только карточки, добавленные в избранное</span>
+          <span className="mode-desc">Список отмеченных карточек: поиск, чистка и прогон</span>
         </button>
         <button className="mode-card" onClick={() => onSelect('learn')}>
           <span className="mode-title">Обучение</span>

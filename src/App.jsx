@@ -8,6 +8,7 @@ import ShuffleMode from './components/ShuffleMode';
 import LearnMode from './components/LearnMode';
 import TableMode from './components/TableMode';
 import GithubLink from './components/GithubLink';
+import FavoritesScreen from './components/FavoritesScreen';
 import './App.css';
 
 function allCardsOf(d) {
@@ -35,8 +36,12 @@ export default function App() {
   function selectMode(m) {
     const all = allCardsOf(deck);
     if (m === 'free') setSessionCards(all);
-    if (m === 'favorites') setSessionCards(all.filter((c) => favIds.includes(c.id)));
     setMode(m);
+  }
+
+  function startFavoritesRun(cards) {
+    setSessionCards(cards);
+    setMode('favoritesRun');
   }
 
   function goHome() {
@@ -79,7 +84,21 @@ export default function App() {
 
     const back = () => setMode(null);
 
-    if (mode === 'free' || mode === 'favorites') {
+    if (mode === 'favorites') {
+      return (
+        <FavoritesScreen
+          deck={deck}
+          favIds={favIds}
+          isFavorite={isFavorite}
+          onToggleFavorite={toggleFavorite}
+          onClearAll={() => setFavIds([])}
+          onStart={startFavoritesRun}
+          onBack={back}
+        />
+      );
+    }
+
+    if (mode === 'free' || mode === 'favoritesRun') {
       return (
         <ShuffleMode
           title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
@@ -87,7 +106,8 @@ export default function App() {
           kind={deck.type}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
-          onBack={back}
+          // Из прогона избранного возвращаемся к списку избранного
+          onBack={mode === 'favoritesRun' ? () => setMode('favorites') : back}
         />
       );
     }
