@@ -4,6 +4,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { useUserDecks } from './hooks/useUserDecks';
 import { favoritesKey, pruneDeckFavorites, removeOrphanFavorites } from './utils/favorites';
 import { downloadText, deckFileName } from './utils/download';
+import { freeModeKind } from './utils/deckTypes';
 import HomeScreen from './components/HomeScreen';
 import CollectionScreen from './components/CollectionScreen';
 import ModeSelector from './components/ModeSelector';
@@ -222,8 +223,8 @@ export default function App() {
         <ShuffleMode
           title={mode === 'free' ? 'Свободная прогонка' : 'Избранное'}
           cards={sessionCards}
-          // Формулы в прогоне — обычные карточки без сборки: сборка только в «Обучении»
-          kind={deck.type === 'build' ? 'formula' : deck.type}
+          // Формулы и выбор ответа в прогоне — обычные карточки: сборка и варианты только в «Обучении»
+          kind={freeModeKind(deck.type)}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
           // Из прогона избранного возвращаемся к списку избранного

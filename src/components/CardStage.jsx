@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Flashcard from './Flashcard';
 import AnswerButtons, { NextButton } from './AnswerButtons';
 import BuildCard from './BuildCard';
+import ChoiceCard, { ChoiceQuestion, ChoiceAnswer } from './ChoiceCard';
 import { FormulaQuestion, FormulaAnswer } from './Formula';
 import { StressChoice, StressAnswer } from './StressWord';
 import { VowelBlank, VowelAnswer, vowelOptions } from './VowelWord';
@@ -12,8 +13,10 @@ import { VowelBlank, VowelAnswer, vowelOptions } from './VowelWord';
 //       'stress' — выбор ударной гласной в слове;
 //       'vowel'  — выбор пропущенной гласной из вариантов под карточкой;
 //       'build'  — сборка формулы из перемешанных частей (режим «Обучение»);
-//       'formula' — карточка формулы без сборки: название -> переворот -> формула (свободный режим).
-export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFavorite, onAnswer }) {
+//       'formula' — карточка формулы без сборки: название -> переворот -> формула (свободный режим);
+//       'choice' — выбор ответа из четырех вариантов (answerPool — все ответы колоды, режим «Обучение»);
+//       'choice-flip' — карточка с выбором ответа без вариантов: вопрос с примером -> переворот (свободный режим).
+export default function CardStage({ card, kind = 'basic', answerPool, isFavorite, onToggleFavorite, onAnswer }) {
   const [flipped, setFlipped] = useState(false);
   const [choice, setChoice] = useState(null);
 
@@ -35,6 +38,35 @@ export default function CardStage({ card, kind = 'basic', isFavorite, onToggleFa
 
   if (kind === 'build') {
     return <BuildCard card={card} isFavorite={isFavorite} onToggleFavorite={onToggleFavorite} onAnswer={onAnswer} />;
+  }
+
+  if (kind === 'choice') {
+    return (
+      <ChoiceCard
+        card={card}
+        answerPool={answerPool}
+        isFavorite={isFavorite}
+        onToggleFavorite={onToggleFavorite}
+        onAnswer={onAnswer}
+      />
+    );
+  }
+
+  if (kind === 'choice-flip') {
+    return (
+      <>
+        <Flashcard
+          front={<ChoiceQuestion card={card} />}
+          back={<ChoiceAnswer card={card} />}
+          hint="вспомни ответ и нажми, чтобы проверить"
+          flipped={flipped}
+          onFlip={() => setFlipped((f) => !f)}
+          isFavorite={isFavorite}
+          onToggleFavorite={onToggleFavorite}
+        />
+        <AnswerButtons visible={flipped} onAnswer={onAnswer} />
+      </>
+    );
   }
 
   if (kind === 'formula') {

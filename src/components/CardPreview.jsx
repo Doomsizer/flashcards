@@ -29,6 +29,8 @@ export function CardRowContent({ card, kind }) {
     sub = card.hint;
   } else if (kind === 'build' || kind === 'formula') {
     sub = <FormulaText tokens={card.tokens} />;
+  } else if (kind === 'choice' || kind === 'choice-flip') {
+    sub = card.hint ? `${card.back} — ${card.hint}` : card.back;
   }
   return (
     <div className="card-row-text">
@@ -80,6 +82,15 @@ export function CardFacesPreview({ card, kind }) {
       </span>
     );
     caption = <TokenChips tokens={scrambled} />;
+  } else if (kind === 'choice') {
+    front = (
+      <span className="mini-build">
+        <span className="mini-card-text">{card.front}</span>
+        {card.hint && <span className="mini-card-hint">{card.hint}</span>}
+      </span>
+    );
+    back = <span className="mini-card-text">{card.back}</span>;
+    caption = 'четыре варианта ответа';
   } else if (kind === 'vowel') {
     const letter = card.back[card.blankIndex].toLowerCase();
     front = <VowelBlank card={card} />;

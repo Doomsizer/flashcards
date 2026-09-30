@@ -6,6 +6,8 @@ import { cardCountLabel } from '../utils/plural';
 import { deckKindLabel } from '../utils/deckTypes';
 
 const HOW_IT_WORKS = {
+  choice:
+    'Так выглядит «Обучение»: четыре варианта ответа, один из них верный. В свободном режиме — обычные карточки с переворотом.',
   basic: 'Нажми на карточку — она перевернется и покажет ответ.',
   stress: 'Все гласные в слове — кнопки: нажми на ту, что под ударением.',
   vowel: 'Выбери букву под карточкой.',
@@ -18,13 +20,13 @@ const MAX_CARDS_LISTED = 100;
 
 // Настоящая карточка колоды, на которую можно ответить прямо в редакторе.
 // После ответа показывается следующая карточка (по кругу).
-function DemoCard({ cards, kind }) {
+function DemoCard({ cards, kind, answerPool }) {
   const [step, setStep] = useState(0);
   const position = step % cards.length;
   const card = cards[position];
   return (
     <div className="demo-card">
-      <CardStage key={`${step}-${card.id}`} card={card} kind={kind} onAnswer={() => setStep((s) => s + 1)} />
+      <CardStage key={`${step}-${card.id}`} card={card} kind={kind} answerPool={answerPool} onAnswer={() => setStep((s) => s + 1)} />
       <p className="preview-note">
         Карточка {position + 1} из {cards.length}
         {cards.length > 1 && ' — ответь, чтобы увидеть следующую'}
@@ -63,7 +65,7 @@ export default function DeckPreview({ deck, warnings, error, isEmpty }) {
             <span className="preview-label">Карточка — попробуй ответить</span>
             <p className="preview-hint">{HOW_IT_WORKS[deck.type]}</p>
             {/* Другая колода (новое название или тип) — пробная карточка начинается сначала */}
-            <DemoCard key={`${deck.type}|${deck.title}`} cards={cards} kind={deck.type} />
+            <DemoCard key={`${deck.type}|${deck.title}`} cards={cards} kind={deck.type} answerPool={deck.answerPool} />
           </div>
 
           {deck.table && (

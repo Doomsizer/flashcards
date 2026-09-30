@@ -7,6 +7,8 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack, o
   const [deleteFailed, setDeleteFailed] = useState(false);
   // У колод формул сборка — в «Обучении», а в свободном режиме обычные карточки
   const isBuild = deck.type === 'build';
+  // У колод с выбором ответа варианты — в «Обучении», а в свободном режиме обычные карточки
+  const isChoice = deck.type === 'choice';
 
   async function handleDelete() {
     setDeleting(true);
@@ -34,7 +36,11 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack, o
         <button className="mode-card" onClick={() => onSelect('free')}>
           <span className="mode-title">Свободный режим</span>
           <span className="mode-desc">
-            {isBuild ? 'Все формулы вразброс: вспомни и переверни карточку' : 'Все карточки в разброс, без повторов'}
+            {isBuild
+              ? 'Все формулы вразброс: вспомни и переверни карточку'
+              : isChoice
+                ? 'Все карточки вразброс: вспомни ответ и переверни карточку'
+                : 'Все карточки в разброс, без повторов'}
           </span>
         </button>
         <button className="mode-card" onClick={() => onSelect('favorites')}>
@@ -46,7 +52,9 @@ export default function ModeSelector({ deck, favoritesCount, onSelect, onBack, o
           <span className="mode-desc">
             {isBuild
               ? 'Собираешь формулы из частей по разделам, с повтором ошибок и тестом в конце'
-              : 'По разделам, с повтором ошибок и тестом в конце'}
+              : isChoice
+                ? 'Выбираешь ответ из четырех вариантов по разделам, с повтором ошибок и тестом в конце'
+                : 'По разделам, с повтором ошибок и тестом в конце'}
           </span>
         </button>
       </div>

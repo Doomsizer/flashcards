@@ -1257,6 +1257,53 @@ h2 {
   font-size: 0.9rem;
 }
 
+/* --- Выбор ответа (Type: choice) --- */
+.choice-question {
+  font-size: clamp(1.5rem, 7vw, 2rem);
+  line-height: 1.25;
+}
+
+/* Четыре варианта под карточкой: сетка 2×2 */
+.choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.btn-choice {
+  min-height: 56px;
+  padding: 10px 12px;
+  border-color: rgba(122, 233, 235, 0.35);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  animation: card-in 0.3s var(--ease-out);
+}
+
+.btn-choice:disabled {
+  cursor: default;
+}
+
+.btn-choice.is-ok {
+  border-color: rgba(47, 191, 138, 0.7);
+  background: rgba(47, 191, 138, 0.2);
+  color: var(--green-light);
+}
+
+.btn-choice.is-bad {
+  border-color: rgba(236, 95, 73, 0.7);
+  background: rgba(236, 95, 73, 0.2);
+  color: var(--red-light);
+}
+
+/* Остальные варианты после ответа приглушены */
+.btn-choice.is-dim {
+  opacity: 0.4;
+}
+
 /* Засчитано, хотя порядок частей отличается от записи в колоде */
 .build-note {
   margin: -4px 0 0;
@@ -2151,6 +2198,11 @@ h2 {
   /* Часть в строке сборки при наведении подсказывает, что ее можно убрать */
   .build-token-placed:hover:not(:disabled) {
     border-color: rgba(236, 95, 73, 0.6);
+  }
+
+  .btn-choice:hover:not(:disabled) {
+    background: rgba(122, 233, 235, 0.28);
+    border-color: rgba(122, 233, 235, 0.6);
   }
 
   .guide-tab:hover:not(.is-active) {

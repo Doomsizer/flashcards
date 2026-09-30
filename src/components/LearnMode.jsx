@@ -71,6 +71,7 @@ export default function LearnMode({ deck, isFavorite, onToggleFavorite, onBack }
             key={step}
             card={queue[0]}
             kind={deck.type}
+            answerPool={deck.answerPool}
             isFavorite={isFavorite(queue[0].id)}
             onToggleFavorite={() => onToggleFavorite(queue[0].id)}
             onAnswer={answerPractice}
@@ -98,6 +99,7 @@ export default function LearnMode({ deck, isFavorite, onToggleFavorite, onBack }
             key={`test-${testIndex}`}
             card={testQueue[testIndex]}
             kind={deck.type}
+            answerPool={deck.answerPool}
             isFavorite={isFavorite(testQueue[testIndex].id)}
             onToggleFavorite={() => onToggleFavorite(testQueue[testIndex].id)}
             onAnswer={answerTest}

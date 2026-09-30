@@ -4,19 +4,21 @@
 // Формат:
 //   # Deck: Название        — начало колоды
 //   Subject: Предмет         — необязательно
-//   Type: stress | vowel | build — тип карточек, по умолчанию обычные
+//   Type: stress | vowel | build | choice — тип карточек, по умолчанию обычные
 //   Mode: table              — дополнительный режим «Таблица» (для обычных карточек)
 //   // комментарий
 //   вопрос -> ответ          — обычная карточка
 //   звонИт (пояснение)       — ударение (Type: stress)
 //   к(?)т -> кот             — пропущенная гласная (Type: vowel)
 //   Площадь круга -> S = pi*r^2 — сборка формулы из частей (Type: build)
+//   кто (Кто пришел?) -> Вопросительное — выбор ответа из вариантов (Type: choice):
+//                                варианты — другие ответы этой же колоды
 //
 // ID колод и карточек строятся из текста, чтобы избранное переживало перегенерацию.
 // Менять правила построения ID нельзя — сбросится избранное у всех пользователей.
 
 export const CARDS_PER_SECTION = 10;
-export const DECK_TYPES = ['basic', 'stress', 'vowel', 'build'];
+export const DECK_TYPES = ['basic', 'stress', 'vowel', 'build', 'choice'];
 
 // Буква е с точками задана кодом символа, чтобы не писать ее в коде
 const YO = String.fromCharCode(0x451);
@@ -246,6 +248,13 @@ export function parseDeckText(text, options = {}) {
         });
       }
       if (tableMode) deck.table = buildTable();
+      if (deck.type === 'choice') {
+        // Все разные ответы колоды: из них берутся неверные варианты
+        deck.answerPool = [...new Set(cards.map((card) => card.back))];
+        if (deck.answerPool.length < 2) {
+          warn(`В колоде «${deck.title}» все ответы одинаковые — не из чего составить варианты.`, deck.line);
+        }
+      }
       delete deck.line;
       decks.push(deck);
     }
@@ -346,6 +355,18 @@ export function parseDeckText(text, options = {}) {
     );
   }
 
+  function parseChoiceLine(line) {
+    // «кто (Кто пришел?) -> Вопросительное»: в скобках — пример или пояснение, показывается под вопросом
+    const parts = splitArrow(line);
+    if (!parts || !parts[0] || !parts[1]) {
+      warn(`«${line}» пропущено: нужно «вопрос -> ответ».`);
+      return;
+    }
+    const { text: front, hint } = splitTrailingHint(parts[0]);
+    const back = parts[1];
+    addCard({ idSource: front, front, back, ...(hint ? { hint } : {}) }, `${front}|${hint || ''}->${back}`.toLowerCase());
+  }
+
   function parseBasicLine(line) {
     const parts = splitArrow(line);
     if (!parts || !parts[0] || !parts[1]) {
@@ -384,7 +405,7 @@ export function parseDeckText(text, options = {}) {
     if (type !== null) {
       const value = type.toLowerCase();
       if (DECK_TYPES.includes(value)) deck.type = value;
-      else warn(`Неизвестный тип «${type}»: бывают stress, vowel и build. Колода будет с обычными карточками.`);
+      else warn(`Неизвестный тип «${type}»: бывают stress, vowel, build и choice. Колода будет с обычными карточками.`);
       return;
     }
 
@@ -398,6 +419,7 @@ export function parseDeckText(text, options = {}) {
     if (deck.type === 'stress') parseStressLine(line);
     else if (deck.type === 'vowel') parseVowelLine(line);
     else if (deck.type === 'build') parseBuildLine(line);
+    else if (deck.type === 'choice') parseChoiceLine(line);
     else parseBasicLine(line);
   });
   lineNo = lines.length;
