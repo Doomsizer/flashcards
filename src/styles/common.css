@@ -1,0 +1,101 @@
+/* Общие блоки экранов: плашка прогресса, панель итогов, пустой список, уведомления, загрузка */
+
+/* --- Прогресс: «3 / 20», «Осталось в разделе: 5» --- */
+.progress {
+  color: var(--accent-2);
+  background: rgba(122, 177, 235, 0.12);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  margin: 0 0 16px;
+}
+
+/* --- Панель итогов и сообщений: конец раздела, итоги прохода, ошибка загрузки --- */
+.summary {
+  width: 100%;
+  text-align: center;
+  margin-top: 24px;
+  padding: 28px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: card-in 0.35s var(--ease-out);
+}
+
+.summary p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.summary .btn {
+  flex: none;
+  min-width: 220px;
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+/* Второстепенная кнопка: прозрачная с голубой рамкой */
+.summary .btn-ghost {
+  border-color: rgba(122, 233, 235, 0.4);
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
+
+.summary .btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* --- Пустой список, «Ничего не найдено» --- */
+.fav-empty {
+  margin: 8px 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* --- Уведомления --- */
+.notice {
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.notice-error {
+  background: rgba(236, 95, 73, 0.14);
+  color: var(--red-light);
+}
+
+/* --- Загрузка --- */
+.spinner {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(122, 233, 235, 0.2);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

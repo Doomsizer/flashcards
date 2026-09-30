@@ -35,6 +35,14 @@ const inCodeRange = (ch, from, to) => ch.charCodeAt(0) >= from && ch.charCodeAt(
 const isSup = (t) => typeof t === 'string' && t.length > 1 && t[0] === '^';
 const isSub = (t) => typeof t === 'string' && t.length > 1 && t[0] === '_';
 
+// Часть, взятая в колоде в квадратные скобки ([2α], [(α+β)/2]), — целое выражение, например аргумент
+// функции: sin [2α] = sin(2α). Возвращает ее части или null, если это обычная часть
+function groupParts(t) {
+  if (typeof t !== 'string') return null;
+  const parts = tokenizeFormula(t);
+  return parts.length === 1 && parts[0] === t ? null : parts;
+}
+
 // Переменная: латинская буква, греческая буква (символом или именем), русское слово
 function isVariable(t) {
   if (/^[A-Za-z]$/.test(t) || has(GREEK_LETTERS, t)) return true;
@@ -45,7 +53,7 @@ function isVariable(t) {
 class ParseError extends Error {}
 
 // Разбор последовательности частей в выражения. Возвращает стороны равенства: [expr] или [left, right].
-// Функции (sin, √) применяются к одному следующему множителю со степенью: sin α, √3, √(a² + b²).
+// Функции (sin, √) применяются к одному следующему множителю со степенью: sin α, √3, √(a² + b²), sin [2α].
 function parseTokens(tokens) {
   let pos = 0;
   let absDepth = 0;
@@ -58,7 +66,7 @@ function parseTokens(tokens) {
   function startsFactor(t) {
     if (t === undefined) return false;
     if (t === '|') return absDepth === 0;
-    return t === '(' || has(FUNCTIONS, t) || has(FRACTIONS, t) || /^[0-9]/.test(t) || isVariable(t);
+    return t === '(' || has(FUNCTIONS, t) || has(FRACTIONS, t) || /^[0-9]/.test(t) || isVariable(t) || groupParts(t) !== null;
   }
 
   function exponent(raw) {
@@ -70,6 +78,12 @@ function parseTokens(tokens) {
   function primary() {
     const t = tokens[pos++];
     if (t === undefined) fail();
+    const group = groupParts(t);
+    if (group) {
+      const sides = parseTokens(group);
+      if (sides.length !== 1) fail();
+      return sides[0];
+    }
     if (t === '(') {
       const inner = expression();
       if (tokens[pos++] !== ')') fail();

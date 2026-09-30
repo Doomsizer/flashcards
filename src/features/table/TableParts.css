@@ -1,0 +1,103 @@
+/* Сетка таблицы: общая для режима «Таблица» и мини-таблицы в редакторе.
+   Все виды клеток — здесь же, рядом с .table-cell: стили режима и редактора грузятся в разное время,
+   и то, какое правило победит, не должно зависеть от порядка загрузки файлов */
+
+/* Таблица всегда помещается в ширину экрана без прокрутки:
+   столбцы равной ширины, а шрифт и отступы масштабируются от ширины окна */
+.table-wrap {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  padding: clamp(3px, 1.2vw, 8px);
+}
+
+.learn-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: clamp(2px, 0.8vw, 4px);
+  font-size: clamp(0.6rem, 2.6vw, 0.95rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.table-head {
+  padding: 0.4em 0;
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.table-head-main,
+.table-head-sub {
+  display: block;
+}
+
+.table-head-sub {
+  margin-top: 2px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.table-head-row {
+  color: var(--accent-2);
+}
+
+.table-cell {
+  height: 2.8em;
+  padding: 0;
+  border-radius: clamp(6px, 1.8vw, 10px);
+  background: rgba(255, 255, 255, 0.04);
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.table-cell-none {
+  background: transparent;
+}
+
+/* Пропуск, который нужно заполнить (внутри — кнопка .table-blank из TableMode.css) */
+.table-cell-blank {
+  padding: 0;
+  background: transparent;
+}
+
+.table-cell-ok {
+  background: rgba(47, 191, 138, 0.2);
+  color: var(--green-light);
+  animation: cell-pop 0.35s var(--ease-out);
+}
+
+.table-cell-wrong {
+  background: rgba(236, 95, 73, 0.22);
+  color: var(--red-light);
+  animation: cell-shake 0.4s ease;
+}
+
+@keyframes cell-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes cell-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+/* Пропуск в мини-таблице предпросмотра */
+.table-cell-hole {
+  background: transparent;
+  border: 1.5px dashed rgba(122, 233, 235, 0.55);
+  color: var(--accent);
+  font-weight: 800;
+}

@@ -1,0 +1,139 @@
+/* Карточки колод в списках, группы по предметам.
+   Все варианты карточки колоды — здесь, в том числе «Добавить свою колоду» и копия в предпросмотре редактора */
+.deck-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.deck-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.deck-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.deck-subject {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.deck-title {
+  font-size: 1.08rem;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.deck-count {
+  font-size: 0.87rem;
+  color: var(--text-muted);
+}
+
+/* --- Колоды, сгруппированные по предметам --- */
+.section-title {
+  align-self: flex-start;
+  margin: 28px 0 0;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+.deck-group {
+  width: 100%;
+}
+
+.deck-group .section-title {
+  margin-top: 22px;
+}
+
+.screen > .deck-card-add {
+  margin-top: 12px;
+}
+
+.deck-card:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.deck-card.is-loading {
+  border-color: rgba(122, 233, 235, 0.45);
+}
+
+.deck-spinner {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  margin-top: -10px;
+}
+
+.deck-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 194, 51, 0.16);
+  color: var(--yellow);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+}
+
+.deck-card-user {
+  border-left: 3px solid var(--yellow);
+}
+
+/* «Добавить свою колоду» в коллекции «Мои колоды» */
+.deck-card-add {
+  align-items: center;
+  text-align: center;
+  border-style: dashed;
+  border-color: rgba(122, 233, 235, 0.4);
+  background: transparent;
+}
+
+.deck-add-plus {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Копия карточки колоды в предпросмотре редактора — не кнопка */
+.deck-card-static,
+.deck-card-static:active {
+  cursor: default;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deck-card:hover:not(:disabled):not(.deck-card-static) {
+    background: var(--surface-hover);
+    border-color: rgba(122, 233, 235, 0.45);
+    box-shadow: 0 10px 28px -10px rgba(122, 233, 235, 0.35);
+    transform: translateY(-2px);
+  }
+}

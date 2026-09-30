@@ -1,0 +1,26 @@
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  /* Не меньше 16px: иначе iPhone приближает страницу при фокусе на поле */
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-input:focus {
+  border-color: rgba(122, 233, 235, 0.55);
+}
+
+/* Поле прямо на экране (главный экран, коллекция) — с отступами от заголовка и списка */
+.screen > .search-input {
+  margin: 8px 0 4px;
+}

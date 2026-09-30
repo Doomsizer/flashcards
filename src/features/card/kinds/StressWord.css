@@ -1,0 +1,52 @@
+/* Ударения: гласные слова — кнопки, на обороте ударная подчеркнута, ошибочный выбор зачеркнут.
+   Блок «слово + пояснение» — в cardText.css */
+.stress-word {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  /* Длинные слова (вероисповедание) должны помещаться на телефоне в одну строку */
+  font-size: clamp(1.3rem, 6vw, 1.9rem);
+  letter-spacing: 0.02em;
+}
+
+.stress-vowel {
+  font: inherit;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(122, 233, 235, 0.3);
+  border-radius: 10px;
+  padding: 0 4px;
+  margin: 0 1px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s var(--ease-out), box-shadow 0.15s ease;
+}
+
+.stress-vowel:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.stress-vowel:disabled {
+  cursor: default;
+}
+
+.stress-correct {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+.stress-wrong-choice {
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 3px;
+  opacity: 0.8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stress-vowel:hover:not(:disabled) {
+    background: rgba(122, 233, 235, 0.28);
+    box-shadow: 0 6px 16px -6px rgba(122, 233, 235, 0.6);
+    transform: translateY(-2px);
+  }
+}

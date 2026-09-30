@@ -1,0 +1,7 @@
+/* Мини-таблица в памятке и предпросмотре. Сетка и клетки (в том числе пропуск «?») — в table/TableParts.css */
+.table-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}

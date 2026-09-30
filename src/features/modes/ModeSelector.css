@@ -1,0 +1,73 @@
+/* Меню колоды: выбор режима и действия со своей колодой */
+.mode-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(6px);
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.mode-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.mode-title {
+  font-size: 1.08rem;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.mode-desc {
+  font-size: 0.87rem;
+  color: var(--text-muted);
+}
+
+/* Режим «Таблица» — выделен */
+.mode-card-special {
+  border-color: rgba(122, 233, 235, 0.4);
+  background: linear-gradient(150deg, rgba(122, 233, 235, 0.12), rgba(122, 177, 235, 0.06));
+}
+
+/* Действия со своей колодой: редактировать, скачать, удалить */
+.deck-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  margin-top: 20px;
+}
+
+.deck-tools p {
+  width: 100%;
+  margin: 0 0 4px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mode-card:hover {
+    background: var(--surface-hover);
+    border-color: rgba(122, 233, 235, 0.45);
+    box-shadow: 0 10px 28px -10px rgba(122, 233, 235, 0.35);
+    transform: translateY(-2px);
+  }
+}

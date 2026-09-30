@@ -1,0 +1,12 @@
+/* Строка над карточкой во время прохода: прогресс и счетчик ответов */
+.session-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.session-bar .progress {
+  margin: 0;
+}

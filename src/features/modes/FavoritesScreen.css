@@ -1,0 +1,30 @@
+/* Экран избранного: кнопка прогона, поиск, список и очистка */
+.fav-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.fav-screen .btn {
+  flex: none;
+  width: 100%;
+}
+
+.clear-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.clear-zone p {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

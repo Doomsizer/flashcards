@@ -1,0 +1,70 @@
+/* Итоги прохода: статистика, полоска точности, список ошибок, кнопки повтора.
+   Сама панель — .summary в styles/common.css */
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 6px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.stat-correct .stat-value {
+  color: var(--green-light);
+}
+
+.stat-wrong .stat-value {
+  color: var(--red-light);
+}
+
+.stats-bar {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(236, 95, 73, 0.55);
+}
+
+.stats-bar-correct {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #37cf97, var(--green));
+  transition: width 0.6s var(--ease-out);
+}
+
+.mistakes {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: card-in 0.3s var(--ease-out);
+}

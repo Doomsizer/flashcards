@@ -1,0 +1,71 @@
+/* Формулы: запись формулы, греческие буквы, надписи на кнопках-частях (◻², ◻₀).
+   Блок «название + пояснение» — в cardText.css, сборка из частей — в BuildCard.css */
+.formula {
+  white-space: normal;
+}
+
+.formula-op {
+  margin: 0 0.22em;
+}
+
+/* Греческие буквы в формулах и пояснениях: в Manrope α похожа на латинскую a */
+.greek {
+  font-family: 'Cambria Math', Cambria, 'Times New Roman', 'Noto Serif', serif;
+  font-style: italic;
+  font-size: 1.1em;
+  line-height: 1;
+  /* Курсив выступает вправо — чуть места, чтобы не налезал на соседний знак */
+  padding-right: 0.08em;
+}
+
+.formula-gap-before {
+  margin-left: 0.2em;
+}
+
+.formula-gap-after {
+  margin-right: 0.2em;
+}
+
+.formula sup,
+.formula sub {
+  font-size: 0.62em;
+  line-height: 0;
+}
+
+/* Название формулы на лицевой стороне */
+.build-question {
+  font-size: clamp(1.25rem, 5.5vw, 1.6rem);
+  line-height: 1.3;
+}
+
+/* Формула на обороте */
+.build-block .formula {
+  font-size: clamp(1.2rem, 5.5vw, 1.75rem);
+  line-height: 1.4;
+}
+
+/* Степень на кнопке — справа вверху от квадратика (◻²), индекс — справа внизу (◻₂) */
+.token-label {
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.token-label sup {
+  vertical-align: 0.55em;
+}
+
+.token-label sub {
+  vertical-align: -0.45em;
+}
+
+/* Пустой квадратик перед степенью или индексом на кнопке: ◻² */
+.token-box {
+  display: inline-block;
+  width: 0.62em;
+  height: 0.62em;
+  margin-right: 0.08em;
+  border: 1.5px dashed currentColor;
+  border-radius: 3px;
+  opacity: 0.55;
+}

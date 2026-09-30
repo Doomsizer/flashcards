@@ -1,0 +1,101 @@
+/* Звезда избранного и анимация «поп» при добавлении */
+.fav-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.2s ease;
+}
+
+.fav-btn-active {
+  color: var(--yellow);
+}
+
+.fav-star {
+  position: relative;
+  display: inline-block;
+}
+
+.fav-btn-active .fav-star {
+  text-shadow: 0 0 14px rgba(255, 194, 51, 0.55);
+}
+
+.fav-star-pop {
+  animation: star-pop 0.55s var(--ease-out);
+}
+
+/* Кольцо, расходящееся от звезды */
+.fav-star-pop::before,
+.fav-star-pop::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+.fav-star-pop::before {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 2px solid var(--yellow);
+  animation: star-ring 0.5s ease-out forwards;
+}
+
+/* Искорки: одна точка + ее копии через box-shadow */
+.fav-star-pop::after {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow:
+    0 -20px 0 var(--yellow),
+    14px -14px 0 var(--accent),
+    20px 0 0 var(--yellow),
+    14px 14px 0 var(--accent),
+    0 20px 0 var(--yellow),
+    -14px 14px 0 var(--accent),
+    -20px 0 0 var(--yellow),
+    -14px -14px 0 var(--accent);
+  animation: star-sparks 0.55s ease-out forwards;
+}
+
+@keyframes star-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.65) rotate(-14deg); }
+  55% { transform: scale(0.85) rotate(6deg); }
+  75% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes star-ring {
+  from { transform: scale(0.3); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes star-sparks {
+  0% { transform: scale(0.3); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fav-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+  }
+
+  .fav-btn-active:hover {
+    color: var(--yellow);
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import './ArrowIcon.css';
 
 // Стрелка в стиле шрифта: скругленные концы, толщина линии как у жирного Manrope
 export default function ArrowIcon({ direction = 'left', size = 18 }) {

@@ -1,0 +1,174 @@
+/* Памятка в редакторе: схема формата, вкладки с видами колод, пример текста */
+.guide {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.guide summary {
+  padding: 14px 16px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.guide code,
+.code-sample {
+  font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', monospace;
+}
+
+.guide code {
+  padding: 1px 5px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+/* Схема формата: слева строка, справа — что она делает */
+.guide-format {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 16px;
+}
+
+.guide-format-row {
+  display: grid;
+  grid-template-columns: minmax(0, 11.5em) 1fr;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.85rem;
+}
+
+.guide-format dt,
+.guide-format dd {
+  margin: 0;
+}
+
+.guide-format dd {
+  color: var(--text-muted);
+}
+
+/* Вкладки с видами колод: на узком экране прокручиваются вбок, а не сжимаются */
+.guide-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 16px 16px 0;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(10, 6, 30, 0.35);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.guide-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.guide-tab {
+  flex: 1 0 auto;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.guide-tab.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.guide-example {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.guide-example-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.guide-example-desc p {
+  margin: 0;
+}
+
+.guide-example-desc p + p {
+  margin-top: 6px;
+}
+
+.guide-example-desc strong {
+  color: var(--accent);
+}
+
+.guide-parse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
+
+.guide-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+}
+
+.guide-list li + li {
+  margin-top: 4px;
+}
+
+.guide-example-body {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 560px) {
+  .guide-example-body {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.guide-example-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.guide-insert {
+  width: 100%;
+}
+
+/* Текст примера */
+.code-sample {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(10, 6, 30, 0.45);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .guide-tab:hover:not(.is-active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+  }
+}

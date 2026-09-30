@@ -1,0 +1,92 @@
+/* Кнопки: основная .btn с вариантами и текстовые кнопки-ссылки */
+.btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--surface-hover);
+  color: var(--text);
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* «Знал» / «Не знал» */
+.btn-correct {
+  border-color: transparent;
+  background: linear-gradient(150deg, #37cf97, var(--green));
+  box-shadow: 0 8px 20px -8px rgba(47, 191, 138, 0.7);
+}
+
+.btn-wrong {
+  border-color: transparent;
+  background: linear-gradient(150deg, #f57561, var(--red));
+  box-shadow: 0 8px 20px -8px rgba(236, 95, 73, 0.7);
+}
+
+.btn-next {
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+.btn-primary {
+  border-color: transparent;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #14102e;
+  box-shadow: 0 8px 22px -8px rgba(122, 233, 235, 0.6);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Второстепенная кнопка: прозрачная с голубой рамкой */
+.btn-ghost {
+  border-color: rgba(122, 233, 235, 0.4);
+  background: transparent;
+  color: var(--accent);
+}
+
+/* Кнопка-ссылка: «Отмена», «Удалить», «Загрузить .txt» */
+.link-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-btn-danger {
+  color: var(--red-light);
+}
+
+/* Наведение — только для мыши. На телефоне :hover «залипает» на последней нажатой кнопке
+   и она продолжает светиться. Так же устроены блоки наведения в остальных файлах стилей. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .btn:hover .arrow-icon {
+    translate: 3px 0;
+  }
+
+  .link-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}

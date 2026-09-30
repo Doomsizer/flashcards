@@ -1,0 +1,48 @@
+/* Счетчик ответов во время прохода: зеленая и красная плашки */
+.score-counter {
+  display: flex;
+  gap: 6px;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 42px;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Цветная точка перед числом */
+.score-pill::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.score-pill-correct {
+  color: var(--green-light);
+  background: rgba(47, 191, 138, 0.16);
+}
+
+.score-pill-wrong {
+  color: var(--red-light);
+  background: rgba(236, 95, 73, 0.16);
+}
+
+.score-value {
+  display: inline-block;
+  animation: score-bump 0.35s var(--ease-out);
+}
+
+@keyframes score-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.45); }
+  100% { transform: scale(1); }
+}

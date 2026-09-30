@@ -1,0 +1,14 @@
+/* Ряд кнопок под карточкой: «Знал» / «Не знал», «Дальше», варианты букв */
+.answer-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 20px;
+  transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
+}
+
+.answer-buttons-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}

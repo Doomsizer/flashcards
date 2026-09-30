@@ -1,0 +1,140 @@
+/* Мини-карточка в памятке: лицевая сторона и ответ, части формулы, варианты букв */
+.mini-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.mini-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 118px;
+  padding: 26px 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-front);
+  box-shadow: 0 10px 24px -14px rgba(8, 4, 30, 0.8);
+  text-align: center;
+}
+
+.mini-card-back {
+  background: var(--card-back);
+  border-color: rgba(122, 233, 235, 0.3);
+}
+
+.mini-card-label {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.mini-card-body {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.mini-card-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.mini-card-caption {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Название формулы или вопрос + пояснение */
+.mini-build {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.mini-card-hint {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Слова ударений и пропусков в мини-карточке — мельче, чем на настоящей */
+.mini-card .stress-word,
+.mini-card .vowel-word {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.mini-card .stress-block {
+  gap: 4px;
+}
+
+.mini-card .stress-vowel {
+  padding: 0 3px;
+  margin: 0 1px;
+  border-radius: 6px;
+}
+
+.mini-card .stress-hint {
+  font-size: 0.72rem;
+}
+
+.mini-options {
+  display: flex;
+  gap: 6px;
+}
+
+/* Части формулы в мини-карточке */
+.mini-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.mini-token {
+  display: inline-flex;
+  align-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  justify-content: center;
+  border: 1px solid rgba(122, 233, 235, 0.35);
+  border-radius: 7px;
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.mini-token .formula-op {
+  margin: 0;
+}
+
+.mini-token sup,
+.mini-token sub {
+  font-size: 0.62em;
+  line-height: 0;
+}
+
+.mini-option {
+  min-width: 28px;
+  padding: 1px 8px;
+  border: 1px solid rgba(122, 233, 235, 0.35);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 800;
+}

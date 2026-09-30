@@ -1,0 +1,53 @@
+/* Пропущенные гласные: пустая ячейка на месте буквы, на обороте — вставленная буква.
+   Блок «слово + пояснение» — в cardText.css */
+.vowel-word {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: clamp(1.4rem, 6.5vw, 2rem);
+  letter-spacing: 0.02em;
+}
+
+/* Пустая ячейка на месте пропуска */
+.vowel-slot {
+  display: inline-block;
+  width: 0.72em;
+  height: 1.05em;
+  margin: 0 0.08em;
+  align-self: center;
+  border-radius: 8px;
+  border: 2px dashed rgba(122, 233, 235, 0.6);
+  background: var(--accent-soft);
+  animation: slot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes slot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 233, 235, 0.35); }
+  50% { box-shadow: 0 0 0 5px rgba(122, 233, 235, 0); }
+}
+
+/* Вставленная буква на обороте */
+.vowel-letter {
+  padding: 0 0.06em;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+/* Выбранный неверный вариант — маленький зачеркнутый рядом со словом */
+.vowel-wrong-choice {
+  margin-left: 0.5em;
+  font-size: 0.6em;
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+}
+
+/* Кнопки с буквами под карточкой (их рисует CardStage) — обычные .btn, которые появляются с анимацией */
+.btn-option {
+  animation: card-in 0.3s var(--ease-out);
+}

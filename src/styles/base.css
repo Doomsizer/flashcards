@@ -1,0 +1,105 @@
+/* Основа: сброс, фон страницы, заголовки, контейнер экрана, фокус, общая анимация появления */
+#root {
+  zoom: var(--ui-zoom);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(900px 520px at 110% -5%, var(--bg-glow-violet), transparent 60%),
+    radial-gradient(800px 480px at -15% 105%, var(--bg-glow-blue), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* На сенсорных экранах обводка фокуса не нужна: после тапа она оставалась на кнопке */
+@media (hover: none) {
+  :focus-visible {
+    outline: none;
+  }
+}
+
+/* --- Экран: колонка по центру между шапкой и подвалом --- */
+.screen {
+  max-width: 480px;
+  margin: 0 auto;
+  /* 100vh внутри увеличенного #root тоже умножается на zoom — делим обратно */
+  min-height: calc(100vh / var(--ui-zoom) - var(--header-h) - var(--footer-h));
+  padding: 8px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Экран с длинным содержимым (редактор) — от верха, чтобы не прыгал при изменении высоты */
+.screen-top {
+  justify-content: flex-start;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin: 8px 0 6px;
+}
+
+h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+/* Появление: карточка, панель итогов, кнопки вариантов, списки */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* На ПК экран чуть шире и дальше от шапки */
+@media (min-width: 700px) {
+  .screen {
+    max-width: 640px;
+    padding-top: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,27 @@
+/* Кнопка «Назад» в левом верхнем углу экрана */
+.back-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  margin-left: -10px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back-btn:hover {
+    background: var(--accent-soft);
+  }
+
+  .back-btn:hover .arrow-icon {
+    translate: -3px 0;
+  }
+}

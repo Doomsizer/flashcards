@@ -1,0 +1,68 @@
+/* Каркас страницы: шапка с логотипом и подвал */
+
+/* --- Шапка с логотипом --- */
+.app-header {
+  max-width: 480px;
+  height: var(--header-h);
+  margin: 0 0 auto 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* --- Подвал: ссылка на GitHub в правом нижнем углу --- */
+.app-footer {
+  height: var(--footer-h);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: -8px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.app-logo-name {
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.app-logo-heart {
+  color: #ff5d8f;
+  display: inline-block;
+  animation: heart-beat 2.4s ease-in-out infinite;
+}
+
+@keyframes heart-beat {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(1.25); }
+  80% { transform: scale(1); }
+  90% { transform: scale(1.15); }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-logo:hover {
+    color: var(--text);
+  }
+}
+
+/* На ПК шапка шире — вровень с экраном */
+@media (min-width: 700px) {
+  .app-header {
+    max-width: 640px;
+  }
+}

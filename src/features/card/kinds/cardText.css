@@ -1,0 +1,32 @@
+/* Содержимое карточки: крупный текст и пояснение под ним. Общее для нескольких видов карточек */
+
+/* Слово + пояснение: ударения, пропущенные гласные */
+.stress-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stress-hint {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Название или формула + пояснение под ними: формулы, выбор ответа */
+.build-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Пояснение: что означают буквы в формуле, пример к вопросу */
+.build-hint {
+  max-width: 34em;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+}

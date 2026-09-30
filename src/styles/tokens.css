@@ -1,0 +1,46 @@
+/* Переменные темы: цвета, размеры, тени, масштаб интерфейса */
+:root {
+  /* Фон */
+  --bg: #1b1238;
+  --bg-glow-violet: rgba(150, 90, 255, 0.28);
+  --bg-glow-blue: rgba(122, 177, 235, 0.16);
+
+  /* Поверхности */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.09);
+  --card-front: linear-gradient(150deg, #36246f 0%, #282b72 100%);
+  --card-back: linear-gradient(150deg, #213a78 0%, #1d2a66 100%);
+
+  /* Текст */
+  --text: #f1eeff;
+  --text-muted: #a8a2d4;
+
+  /* Акценты */
+  --accent: #7ae9eb;
+  --accent-2: #7ab1eb;
+  --accent-soft: rgba(122, 233, 235, 0.14);
+  --yellow: #ffc233;
+  --green: #2fbf8a;
+  --green-light: #6ff0bd;
+  --red: #ec5f49;
+  --red-light: #ff9a8a;
+
+  --header-h: 48px;
+  --footer-h: 52px;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --shadow-card: 0 18px 40px -12px rgba(8, 4, 30, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Масштаб всего интерфейса (см. #root в base.css). На компьютере — 1.5, на телефоне — 1 */
+  --ui-zoom: 1;
+}
+
+/* На больших экранах с мышью интерфейс при 100% масштабе браузера выглядел мелким,
+   поэтому увеличиваем его целиком, как если бы в браузере стояло 150% */
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  :root {
+    --ui-zoom: 1.5;
+  }
+}

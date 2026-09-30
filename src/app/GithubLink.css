@@ -1,0 +1,18 @@
+/* Значок GitHub в подвале */
+.github-link {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: -8px;
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .github-link:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+}

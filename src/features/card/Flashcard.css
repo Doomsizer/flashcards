@@ -1,0 +1,133 @@
+/* Карточка с переворотом: две стороны, подписи, зеленый / красный оборот после проверки */
+.flashcard {
+  position: relative;
+  width: 100%;
+  perspective: 1400px;
+  cursor: pointer;
+  user-select: none;
+  animation: card-in 0.35s var(--ease-out);
+}
+
+.flashcard-inner {
+  display: grid;
+  min-height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.flashcard-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+/* Невидимая сторона не должна ловить клики (звезда, гласные) */
+.flashcard-inner:not(.is-flipped) .flashcard-face-back,
+.flashcard-inner.is-flipped .flashcard-face-front {
+  pointer-events: none;
+}
+
+/* Обе стороны лежат в одной ячейке грида — высота карточки = высоте большей стороны */
+.flashcard-face {
+  position: relative;
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px 24px 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flashcard-face-front {
+  background: var(--card-front);
+}
+
+.flashcard-face-back {
+  background: var(--card-back);
+  border-color: rgba(122, 233, 235, 0.3);
+  transform: rotateY(180deg);
+}
+
+.flashcard-static {
+  cursor: default;
+}
+
+/* Оборот карточки с проверкой ответа: зеленый / красный в зависимости от ответа */
+.flashcard-face-correct {
+  background: linear-gradient(150deg, #1d5a5a 0%, #1d3f63 100%);
+  border-color: rgba(47, 191, 138, 0.55);
+}
+
+.flashcard-face-correct .flashcard-label,
+.flashcard-face-correct .flashcard-text {
+  color: var(--green-light);
+}
+
+.flashcard-face-wrong {
+  background: linear-gradient(150deg, #5a2350 0%, #3a2466 100%);
+  border-color: rgba(236, 95, 73, 0.55);
+}
+
+.flashcard-face-wrong .flashcard-label,
+.flashcard-face-wrong .flashcard-text {
+  color: var(--red-light);
+}
+
+.flashcard-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.flashcard-text-back {
+  white-space: pre-line;
+}
+
+.flashcard-label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.flashcard-hint {
+  margin: 14px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Звезда избранного в углу карточки */
+.fav-btn-corner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flashcard:hover .flashcard-face-front {
+    border-color: rgba(122, 233, 235, 0.35);
+  }
+}
+
+/* На ПК карточка выше, текст крупнее */
+@media (min-width: 700px) {
+  .flashcard-inner {
+    min-height: 280px;
+  }
+
+  .flashcard-text {
+    font-size: 2rem;
+  }
+}

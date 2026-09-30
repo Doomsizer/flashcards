@@ -1,0 +1,5 @@
+/* Стрелка сдвигается при наведении на свою кнопку (см. BackButton.css и .btn в styles/buttons.css) */
+.arrow-icon {
+  flex-shrink: 0;
+  transition: translate 0.2s var(--ease-out);
+}

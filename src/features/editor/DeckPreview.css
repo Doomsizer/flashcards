@@ -1,0 +1,100 @@
+/* Живой предпросмотр колоды в редакторе: карточка колоды, пробная карточка, все карточки, замечания */
+.preview {
+  width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(122, 233, 235, 0.3);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.preview-empty {
+  border-style: dashed;
+  border-color: var(--border);
+}
+
+.preview-title {
+  font-size: 1.05rem;
+}
+
+.preview-error {
+  margin: 0;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.preview-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-all summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.preview-all[open] summary {
+  margin-bottom: 4px;
+}
+
+/* Замечания разборщика: номер строки и что с ней не так */
+.preview-warnings {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 194, 51, 0.08);
+  font-size: 0.85rem;
+}
+
+.preview-warnings p {
+  margin: 0;
+}
+
+.preview-warnings-title {
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.preview-warnings ul {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+}
+
+.preview-warnings li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.preview-warnings li + li {
+  margin-top: 6px;
+}
+
+.preview-line {
+  flex-shrink: 0;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(255, 194, 51, 0.14);
+  color: var(--yellow);
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
