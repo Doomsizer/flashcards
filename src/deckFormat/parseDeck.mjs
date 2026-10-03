@@ -131,7 +131,8 @@ export function tokenizeFormula(formula) {
       i = end + 1;
     } else if ((ch === '^' || ch === '_') && i + 1 < formula.length) {
       const { end } = readScript(formula, i + 1);
-      tokens.push(formula.slice(i, end).replace(/\s+/g, ''));
+      // Пробелы убираются только между ^ и степенью: внутри скобок они разделяют части (^(log_a b))
+      tokens.push(formula.slice(i, end).replace(/^([\^_])\s+/, '$1'));
       i = end;
     } else {
       const op = FORMULA_OPERATORS.find((o) => formula.startsWith(o, i));

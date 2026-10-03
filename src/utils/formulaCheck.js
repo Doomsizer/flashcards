@@ -38,14 +38,17 @@ const isSub = (t) => typeof t === 'string' && t.length > 1 && t[0] === '_';
 // Часть, взятая в колоде в квадратные скобки ([2α], [(α+β)/2]), — целое выражение, например аргумент
 // функции: sin [2α] = sin(2α). Возвращает ее части или null, если это обычная часть
 function groupParts(t) {
-  if (typeof t !== 'string') return null;
+  if (typeof t !== 'string' || isDerivative(t)) return null;
   const parts = tokenizeFormula(t);
   return parts.length === 1 && parts[0] === t ? null : parts;
 }
 
 // Переменная: латинская буква, греческая буква (символом или именем), русское слово
+// Производная в квадратных скобках ([(sin x)′], [u′]) посчитать нельзя — это отдельный символ, как переменная
+const isDerivative = (t) => t.length > 1 && /[′']/.test(t);
+
 function isVariable(t) {
-  if (/^[A-Za-z]$/.test(t) || has(GREEK_LETTERS, t)) return true;
+  if (/^[A-Za-z]$/.test(t) || has(GREEK_LETTERS, t) || isDerivative(t)) return true;
   if (t.length === 1 && inCodeRange(t, 0x0370, 0x03ff)) return true;
   return [...t].every((ch) => inCodeRange(ch, 0x0400, 0x04ff));
 }
@@ -97,10 +100,12 @@ function parseTokens(tokens) {
       return { op: 'abs', a: inner };
     }
     if (has(FUNCTIONS, t)) {
+      // log_a b: основание логарифма — нижний индекс сразу после log
+      const base = t === 'log' && isSub(peek()) ? exponent(tokens[pos++]) : null;
       // sin²α: степень сразу после имени функции относится к ее значению
       const powers = [];
       while (isSup(peek())) powers.push(exponent(tokens[pos++]));
-      let node = { op: 'fn', f: FUNCTIONS[t], a: power() };
+      let node = base ? { op: 'logb', a: power(), b: base } : { op: 'fn', f: FUNCTIONS[t], a: power() };
       powers.forEach((b) => {
         node = { op: 'pow', a: node, b };
       });
@@ -196,6 +201,8 @@ function evaluate(node, vars) {
       return -evaluate(node.a, vars);
     case 'abs':
       return Math.abs(evaluate(node.a, vars));
+    case 'logb':
+      return Math.log(evaluate(node.a, vars)) / Math.log(evaluate(node.b, vars));
     default:
       return node.f(evaluate(node.a, vars));
   }

@@ -83,7 +83,7 @@ export function MathText({ text }) {
 
 function TokenView({ view, className = '' }) {
   if (view.kind === 'sup') return <sup><MathText text={view.text} /></sup>;
-  if (view.kind === 'sub') return <sub><MathText text={view.text} /></sub>;
+  if (view.kind === 'sub') return <sub className={className || undefined}><MathText text={view.text} /></sub>;
   if (view.kind === 'op') return <span className="formula-op">{view.text}</span>;
   if (view.kind === 'fn') return <span className={`formula-fn ${className}`}>{view.text}</span>;
   return <MathText text={view.text} />;
@@ -99,6 +99,14 @@ function functionGaps(views, i) {
   return `${before ? 'formula-gap-before' : ''} ${after ? 'formula-gap-after' : ''}`;
 }
 
+// Основание логарифма отделяется от аргумента: «logₐ b», но «logₐ(bc)»
+function logBaseGap(views, i) {
+  const prev = views[i - 1];
+  const next = views[i + 1];
+  const isBase = prev && prev.kind === 'fn' && prev.text === 'log';
+  return isBase && next && next.kind !== 'op' && !next.text.startsWith('(') ? 'formula-gap-after' : '';
+}
+
 // Формула целиком: S = πr²
 export function FormulaText({ tokens }) {
   const views = tokens.map(tokenView);
@@ -108,7 +116,10 @@ export function FormulaText({ tokens }) {
         <React.Fragment key={i}>
           {/* Два числа подряд (2*3) без знака слились бы в одно — показываем точку умножения */}
           {i > 0 && view.kind === 'number' && views[i - 1].kind === 'number' && <span className="formula-op">·</span>}
-          <TokenView view={view} className={view.kind === 'fn' ? functionGaps(views, i) : ''} />
+          <TokenView
+            view={view}
+            className={view.kind === 'fn' ? functionGaps(views, i) : view.kind === 'sub' ? logBaseGap(views, i) : ''}
+          />
           {/* Длинная формула переносится только после знака (=, +, −), а не посреди sin или числа */}
           {view.kind === 'op' && <wbr />}
         </React.Fragment>
